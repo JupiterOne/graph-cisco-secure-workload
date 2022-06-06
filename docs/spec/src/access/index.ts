@@ -12,16 +12,22 @@ export const accessSpec: StepSpec<IntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'User',
-        _type: 'acme_user',
+        _type: 'csw_user',
         _class: ['User'],
       },
     ],
     relationships: [
       {
-        _type: 'acme_account_has_user',
-        sourceType: 'acme_account',
+        _type: 'csw_account_has_user',
+        sourceType: 'csw_account',
         _class: RelationshipClass.HAS,
-        targetType: 'acme_user',
+        targetType: 'csw_user',
+      },
+      {
+        _type: 'csw_user_has_account',
+        sourceType: 'csw_user',
+        _class: RelationshipClass.HAS,
+        targetType: 'csw_account',
       },
     ],
     dependsOn: ['fetch-account'],
@@ -37,16 +43,16 @@ export const accessSpec: StepSpec<IntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'UserGroup',
-        _type: 'acme_group',
+        _type: 'csw_group',
         _class: ['UserGroup'],
       },
     ],
     relationships: [
       {
-        _type: 'acme_account_has_group',
-        sourceType: 'acme_account',
+        _type: 'csw_account_has_group',
+        sourceType: 'csw_account',
         _class: RelationshipClass.HAS,
-        targetType: 'acme_group',
+        targetType: 'csw_group',
       },
     ],
     dependsOn: ['fetch-account'],
@@ -58,14 +64,14 @@ export const accessSpec: StepSpec<IntegrationConfig>[] = [
      * PATTERN: Build Child Relationships
      */
     id: 'build-user-group-relationships',
-    name: 'Build Group -> User Relationships',
+    name: 'Build User -> Group Relationships',
     entities: [],
     relationships: [
       {
-        _type: 'acme_group_has_user',
-        sourceType: 'acme_group',
+        _type: 'csw_user_has_group',
+        sourceType: 'csw_user',
         _class: RelationshipClass.HAS,
-        targetType: 'acme_user',
+        targetType: 'csw_group',
       },
     ],
     dependsOn: ['fetch-groups', 'fetch-users'],

@@ -1,5 +1,5 @@
-import { accountSteps } from './account';
 import { accessSteps } from './access';
+import { accountSteps } from './account';
 
 const integrationSteps = [...accountSteps, ...accessSteps];
 

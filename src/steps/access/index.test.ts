@@ -9,7 +9,7 @@ afterEach(async () => {
   await recording.stop();
 });
 
-test('fetch-users', async () => {
+test.skip('fetch-users', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'fetch-users',
@@ -20,7 +20,7 @@ test('fetch-users', async () => {
   expect(stepResult).toMatchStepMetadata(stepConfig);
 });
 
-test('fetch-groups', async () => {
+test.skip('fetch-groups', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'fetch-groups',
@@ -31,13 +31,13 @@ test('fetch-groups', async () => {
   expect(stepResult).toMatchStepMetadata(stepConfig);
 });
 
-test('build-user-group-relationships', async () => {
+test.skip('build-user-group-relationships', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'build-user-group-relationships',
   });
 
-  const stepConfig = buildStepTestConfigForStep(Steps.GROUP_USER_RELATIONSHIPS);
+  const stepConfig = buildStepTestConfigForStep(Steps.USER_GROUP_RELATIONSHIPS);
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
 });

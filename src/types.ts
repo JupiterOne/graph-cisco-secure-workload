@@ -1,14 +1,20 @@
 // Providers often supply types with their API libraries.
 
-export interface AcmeUser {
+export interface SecureWorkloadUser {
   id: string;
-  name: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  app_scope_id?: string;
+  role_ids: string[];
+  bypass_external_auth: boolean;
+  disabled_at?: number;
 }
 
 export interface AcmeGroup {
   id: string;
   name: string;
-  users?: Pick<AcmeUser, 'id'>[];
+  users?: Pick<SecureWorkloadUser, 'id'>[];
 }
 
 // Those can be useful to a degree, but often they're just full of optional

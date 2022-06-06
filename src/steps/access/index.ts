@@ -16,6 +16,7 @@ import {
   createAccountUserRelationship,
   createGroupEntity,
   createGroupUserRelationship,
+  createUserAccountRelationship,
   createUserEntity,
 } from './converter';
 
@@ -31,6 +32,9 @@ export async function fetchUsers({
     const userEntity = await jobState.addEntity(createUserEntity(user));
     await jobState.addRelationship(
       createAccountUserRelationship(accountEntity, userEntity),
+    );
+    await jobState.addRelationship(
+      createUserAccountRelationship(userEntity, accountEntity),
     );
   });
 }
@@ -90,7 +94,10 @@ export const accessSteps: IntegrationStep<IntegrationConfig>[] = [
     id: Steps.USERS,
     name: 'Fetch Users',
     entities: [Entities.USER],
-    relationships: [Relationships.ACCOUNT_HAS_USER],
+    relationships: [
+      Relationships.ACCOUNT_HAS_USER,
+      Relationships.USER_HAS_ACCOUNT,
+    ],
     dependsOn: [Steps.ACCOUNT],
     executionHandler: fetchUsers,
   },
@@ -103,10 +110,10 @@ export const accessSteps: IntegrationStep<IntegrationConfig>[] = [
     executionHandler: fetchGroups,
   },
   {
-    id: Steps.GROUP_USER_RELATIONSHIPS,
-    name: 'Build Group -> User Relationships',
+    id: Steps.USER_GROUP_RELATIONSHIPS,
+    name: 'Build User -> Group Relationships',
     entities: [],
-    relationships: [Relationships.GROUP_HAS_USER],
+    relationships: [Relationships.USER_HAS_GROUP],
     dependsOn: [Steps.GROUPS, Steps.USERS],
     executionHandler: buildGroupUserRelationships,
   },

@@ -98,9 +98,9 @@ The following entities are created:
 
 | Resources | Entity `_type` | Entity `_class` |
 | --------- | -------------- | --------------- |
-| Account   | `acme_account` | `Account`       |
-| User      | `acme_user`    | `User`          |
-| UserGroup | `acme_group`   | `UserGroup`     |
+| Account   | `csw_account`  | `Account`       |
+| User      | `csw_user`     | `User`          |
+| UserGroup | `csw_group`    | `UserGroup`     |
 
 ### Relationships
 
@@ -108,9 +108,10 @@ The following relationships are created:
 
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
 | --------------------- | --------------------- | --------------------- |
-| `acme_account`        | **HAS**               | `acme_group`          |
-| `acme_account`        | **HAS**               | `acme_user`           |
-| `acme_group`          | **HAS**               | `acme_user`           |
+| `csw_account`         | **HAS**               | `csw_group`           |
+| `csw_account`         | **HAS**               | `csw_user`            |
+| `csw_user`            | **HAS**               | `csw_account`         |
+| `csw_user`            | **HAS**               | `csw_group`           |
 
 <!--
 ********************************************************************************
