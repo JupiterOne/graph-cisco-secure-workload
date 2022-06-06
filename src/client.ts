@@ -70,7 +70,7 @@ export class APIClient {
     return headers;
   }
 
-  public async getAccounts(): Promise<SecureWorkloadUser[]> {
+  public async fetchUsers(): Promise<SecureWorkloadUser[]> {
     const headers = this.generateHeaders('GET', '/openapi/v1/users');
     const URI = this.config.apiURI + '/openapi/v1/users';
     const response: Response = await fetch(URI, { headers: headers });
@@ -112,7 +112,7 @@ export class APIClient {
   public async iterateUsers(
     iteratee: ResourceIteratee<SecureWorkloadUser>,
   ): Promise<void> {
-    const users: SecureWorkloadUser[] = await this.getAccounts();
+    const users: SecureWorkloadUser[] = await this.fetchUsers();
 
     for (const user of users) {
       await iteratee(user);

@@ -70,5 +70,5 @@ export async function validateInvocation(
   }
 
   const apiClient = createAPIClient(config);
-  await apiClient.getAccounts();
+  await apiClient.fetchUsers();
 }

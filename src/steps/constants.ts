@@ -64,10 +64,7 @@ export const Entities: Record<
 };
 
 export const Relationships: Record<
-  | 'ACCOUNT_HAS_USER'
-  | 'ACCOUNT_HAS_GROUP'
-  | 'USER_HAS_GROUP'
-  | 'USER_HAS_ACCOUNT',
+  'ACCOUNT_HAS_USER' | 'ACCOUNT_HAS_GROUP' | 'USER_HAS_GROUP',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -87,11 +84,5 @@ export const Relationships: Record<
     sourceType: Entities.USER._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.GROUP._type,
-  },
-  USER_HAS_ACCOUNT: {
-    _type: 'csw_user_has_account',
-    sourceType: Entities.USER._type,
-    _class: RelationshipClass.HAS,
-    targetType: Entities.ACCOUNT._type,
   },
 };
