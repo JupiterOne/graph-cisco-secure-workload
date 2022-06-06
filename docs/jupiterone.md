@@ -110,7 +110,6 @@ The following relationships are created:
 | --------------------- | --------------------- | --------------------- |
 | `csw_account`         | **HAS**               | `csw_group`           |
 | `csw_account`         | **HAS**               | `csw_user`            |
-| `csw_user`            | **HAS**               | `csw_account`         |
 | `csw_user`            | **HAS**               | `csw_group`           |
 
 <!--

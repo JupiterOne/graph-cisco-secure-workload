@@ -60,16 +60,7 @@ export function createAccountUserRelationship(
     to: user,
   });
 }
-export function createUserAccountRelationship(
-  user: Entity,
-  account: Entity,
-): Relationship {
-  return createDirectRelationship({
-    _class: RelationshipClass.HAS,
-    from: user,
-    to: account,
-  });
-}
+
 export function createAccountGroupRelationship(
   account: Entity,
   group: Entity,

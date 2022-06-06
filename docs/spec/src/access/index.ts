@@ -23,12 +23,6 @@ export const accessSpec: StepSpec<IntegrationConfig>[] = [
         _class: RelationshipClass.HAS,
         targetType: 'csw_user',
       },
-      {
-        _type: 'csw_user_has_account',
-        sourceType: 'csw_user',
-        _class: RelationshipClass.HAS,
-        targetType: 'csw_account',
-      },
     ],
     dependsOn: ['fetch-account'],
     implemented: true,
