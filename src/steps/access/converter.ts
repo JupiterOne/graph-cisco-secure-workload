@@ -27,7 +27,7 @@ export function createUserEntity(user: SecureWorkloadUser): Entity {
         bypassExternalAuth: user.bypass_external_auth,
         disabledAt: user.disabled_at ?? 0,
         name: user.id,
-        displayName: user.id,
+        displayName: `${user.first_name} ${user.last_name}`,
       },
     },
   });

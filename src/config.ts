@@ -65,6 +65,10 @@ export async function validateInvocation(
     );
   }
 
+  if (config.apiURI.endsWith('/')) {
+    config.apiURI = config.apiURI.slice(0, -1);
+  }
+
   const apiClient = createAPIClient(config);
   await apiClient.getAccounts();
 }
