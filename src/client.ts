@@ -24,6 +24,15 @@ export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 export class APIClient {
   constructor(readonly config: IntegrationConfig) {}
 
+  /**
+   * Generates auth token.
+   * @param method GET, PUT, POST, DELETE
+   * @param path this.config.apiURI + API endpoint
+   * @param checksum sha256 checksum of the body or empty string if no body
+   * @param contentType application/json for most calls
+   * @param timestamp YYYY-MM-DDTHH:MM:SS+0000
+   * @returns auth token
+   */
   private generateAuthToken(
     method: string,
     path: string,

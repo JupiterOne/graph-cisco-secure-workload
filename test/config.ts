@@ -10,9 +10,9 @@ if (process.env.LOAD_ENV) {
     path: path.join(__dirname, '../.env'),
   });
 }
-const DEFAULT_API_KEY = '';
-const DEFAULT_API_SECRET = '';
-const DEFAULT_API_URI = '';
+const DEFAULT_API_KEY = '[YOUR_API_KEY]';
+const DEFAULT_API_SECRET = '[YOUR_API_SECRET]';
+const DEFAULT_API_URI = '[YOUR_API_URI]';
 
 export const integrationConfig: IntegrationConfig = {
   apiKey: process.env.API_KEY || DEFAULT_API_KEY,
