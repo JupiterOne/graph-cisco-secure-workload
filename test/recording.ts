@@ -34,10 +34,7 @@ function redact(entry): void {
     entry.request.postData.text = '[REDACTED]';
   }
 
-  if (
-    !entry.response.content.text ||
-    entry.response.content.statusText !== 'OK'
-  ) {
+  if (!entry.response.content.text || entry.response.statusText !== 'OK') {
     return;
   }
 
