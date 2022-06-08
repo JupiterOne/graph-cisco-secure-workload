@@ -17,6 +17,15 @@ export function setupProjectRecording(
     mutateEntry: (entry) => {
       redact(entry);
     },
+    options: {
+      recordFailedRequests: true,
+      matchRequestsBy: {
+        headers: false,
+        url: {
+          hostname: false,
+        },
+      },
+    },
   });
 }
 
@@ -25,7 +34,10 @@ function redact(entry): void {
     entry.request.postData.text = '[REDACTED]';
   }
 
-  if (!entry.response.content.text) {
+  if (
+    !entry.response.content.text ||
+    entry.response.content.statusText !== 'OK'
+  ) {
     return;
   }
 
@@ -40,7 +52,7 @@ function redact(entry): void {
   //in this example, if the return text is an array of objects that have the 'tenant' property...
   if (parsedResponseText[0]?.email) {
     for (let i = 0; i < parsedResponseText.length; i++) {
-      parsedResponseText[i].email = '[REDACTED]';
+      parsedResponseText[i].email = 'REDACTED@example.com';
       parsedResponseText[i].first_name = '[REDACTED]';
       parsedResponseText[i].last_name = '[REDACTED]';
     }

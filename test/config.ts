@@ -12,7 +12,7 @@ if (process.env.LOAD_ENV) {
 }
 const DEFAULT_API_KEY = '[YOUR_API_KEY]';
 const DEFAULT_API_SECRET = '[YOUR_API_SECRET]';
-const DEFAULT_API_URI = '[YOUR_API_URI]';
+const DEFAULT_API_URI = 'https://localhost';
 
 export const integrationConfig: IntegrationConfig = {
   apiKey: process.env.API_KEY || DEFAULT_API_KEY,

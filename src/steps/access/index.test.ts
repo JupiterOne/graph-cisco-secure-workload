@@ -9,7 +9,7 @@ afterEach(async () => {
   await recording.stop();
 });
 
-test.skip('fetch-users', async () => {
+test('fetch-users', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'fetch-users',
@@ -18,6 +18,21 @@ test.skip('fetch-users', async () => {
   const stepConfig = buildStepTestConfigForStep(Steps.USERS);
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
+
+  expect(stepResult.collectedEntities).toMatchGraphObjectSchema({
+    _class: ['User'],
+    schema: {
+      additionalProperties: true,
+      properties: {
+        id: { type: 'string' },
+        email: { type: 'string' },
+        firstName: { type: 'string' },
+        lastName: { type: 'string' },
+        roleIDs: { type: 'array', items: { type: 'string' } },
+        bypassExternalAuth: { type: 'boolean' },
+      },
+    },
+  });
 });
 
 test.skip('fetch-groups', async () => {
