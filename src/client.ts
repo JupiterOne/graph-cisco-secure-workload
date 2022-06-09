@@ -33,43 +33,44 @@ export class APIClient {
    * @param timestamp YYYY-MM-DDTHH:MM:SS+0000
    * @returns auth token
    */
-  private generateAuthToken(
-    method: string,
-    path: string,
-    checksum: string,
-    contentType: string,
-    timestamp: string,
-  ): string {
+  private generateAuthToken(options: {
+    method: string;
+    path: string;
+    checksum: string | undefined;
+    contentType: string;
+    timestamp: string;
+  }): string {
     const { apiSecret } = this.config;
+    const { method, path, checksum, contentType, timestamp } = options;
 
     const hmac = createHmac('sha256', Buffer.from(apiSecret, 'utf8'));
     hmac.update(
-      `${method}\n${path}\n${checksum}\n${contentType}\n${timestamp}\n`,
+      `${method}\n${path}\n${checksum || ''}\n${contentType}\n${timestamp}\n`,
     );
 
     return hmac.digest('base64');
   }
 
-  private generateHeaders(method: string, uri: string, body?: string) {
+  private generateHeaders(method: string, path: string, body?: string) {
     const { apiKey } = this.config;
     const timestamp = new Date().toISOString().slice(0, -5) + '+0000';
     const contentType = 'application/json';
     const checksum = body
       ? createHash('sha256').update(body).digest('hex')
-      : '';
+      : undefined;
 
     const headers = {
       Id: apiKey,
       'Content-Type': contentType,
       'User-Agent': 'graph-cisco-secure-workload',
       Timestamp: timestamp,
-      Authorization: this.generateAuthToken(
+      Authorization: this.generateAuthToken({
         method,
-        uri,
+        path,
         checksum,
         contentType,
         timestamp,
-      ),
+      }),
     };
 
     if (checksum) {

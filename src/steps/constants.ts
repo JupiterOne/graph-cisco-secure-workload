@@ -32,7 +32,7 @@ export const Entities: Record<'ACCOUNT' | 'USER', StepEntityMetadata> = {
         appScopeID: { type: 'string' },
         roleIDs: { type: 'array', items: { type: 'string' } },
         bypassExternalAuth: { type: 'boolean' },
-        disabledAt: { type: 'number' },
+        disabledAt: { type: ['number', 'null'] },
       },
       required: [
         'id',

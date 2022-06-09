@@ -18,19 +18,4 @@ test('fetch-users', async () => {
   const stepConfig = buildStepTestConfigForStep(Steps.USERS);
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
-
-  expect(stepResult.collectedEntities).toMatchGraphObjectSchema({
-    _class: ['User'],
-    schema: {
-      additionalProperties: true,
-      properties: {
-        id: { type: 'string' },
-        email: { type: 'string' },
-        firstName: { type: 'string' },
-        lastName: { type: 'string' },
-        roleIDs: { type: 'array', items: { type: 'string' } },
-        bypassExternalAuth: { type: 'boolean' },
-      },
-    },
-  });
 });
