@@ -7,3 +7,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.0.0] - 2022-06-09
+
+### Added
+
+Initial Cisco Secure Workload
+
+- Added new entity `csw_account`
+- Added new entity `csw_user`
+- Added new relationship `csw_account_has_user`
