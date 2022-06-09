@@ -7,8 +7,6 @@ import {
 export const Steps = {
   ACCOUNT: 'fetch-account',
   USERS: 'fetch-users',
-  GROUPS: 'fetch-groups',
-  USER_GROUP_RELATIONSHIPS: 'build-user-group-relationships',
 };
 
 export const Entities: Record<'ACCOUNT' | 'USER', StepEntityMetadata> = {
