@@ -58,8 +58,6 @@ describe('#validateInvocation', () => {
         recording = setupProjectRecording({
           directory: __dirname,
           name: 'client-id-auth-error',
-          // Many authorization failures will return non-200 responses
-          // and `recordFailedRequest: true` is needed to capture these responses
           options: {
             recordFailedRequests: true,
           },

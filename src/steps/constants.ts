@@ -11,10 +11,7 @@ export const Steps = {
   USER_GROUP_RELATIONSHIPS: 'build-user-group-relationships',
 };
 
-export const Entities: Record<
-  'ACCOUNT' | 'GROUP' | 'USER',
-  StepEntityMetadata
-> = {
+export const Entities: Record<'ACCOUNT' | 'USER', StepEntityMetadata> = {
   ACCOUNT: {
     resourceName: 'Account',
     _type: 'csw_account',
@@ -22,18 +19,6 @@ export const Entities: Record<
     schema: {
       properties: {},
       required: [],
-    },
-  },
-  GROUP: {
-    resourceName: 'UserGroup',
-    _type: 'csw_group',
-    _class: ['UserGroup'],
-    schema: {
-      properties: {
-        email: { type: 'string' },
-        logoLink: { type: 'string' },
-      },
-      required: ['email', 'logoLink'],
     },
   },
   USER: {
@@ -64,7 +49,7 @@ export const Entities: Record<
 };
 
 export const Relationships: Record<
-  'ACCOUNT_HAS_USER' | 'ACCOUNT_HAS_GROUP' | 'USER_HAS_GROUP',
+  'ACCOUNT_HAS_USER',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -72,17 +57,5 @@ export const Relationships: Record<
     sourceType: Entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.USER._type,
-  },
-  ACCOUNT_HAS_GROUP: {
-    _type: 'csw_account_has_group',
-    sourceType: Entities.ACCOUNT._type,
-    _class: RelationshipClass.HAS,
-    targetType: Entities.GROUP._type,
-  },
-  USER_HAS_GROUP: {
-    _type: 'csw_user_has_group',
-    sourceType: Entities.USER._type,
-    _class: RelationshipClass.HAS,
-    targetType: Entities.GROUP._type,
   },
 };

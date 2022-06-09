@@ -23,4 +23,4 @@ above. Mapping is as follows:
 
 - API_KEY= ${`apiKey`}
 - API_SECRET= ${`apiSecret`}
-- API_URI= ${`apiURL`}
+- API_URI= ${`apiURI`}

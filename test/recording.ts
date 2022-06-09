@@ -18,13 +18,13 @@ export function setupProjectRecording(
       redact(entry);
     },
     options: {
-      recordFailedRequests: true,
       matchRequestsBy: {
         headers: false,
         url: {
           hostname: false,
         },
       },
+      ...input.options,
     },
   });
 }

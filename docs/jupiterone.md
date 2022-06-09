@@ -81,7 +81,6 @@ The following entities are created:
 | --------- | -------------- | --------------- |
 | Account   | `csw_account`  | `Account`       |
 | User      | `csw_user`     | `User`          |
-| UserGroup | `csw_group`    | `UserGroup`     |
 
 ### Relationships
 
@@ -89,9 +88,7 @@ The following relationships are created:
 
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
 | --------------------- | --------------------- | --------------------- |
-| `csw_account`         | **HAS**               | `csw_group`           |
 | `csw_account`         | **HAS**               | `csw_user`            |
-| `csw_user`            | **HAS**               | `csw_group`           |
 
 <!--
 ********************************************************************************
