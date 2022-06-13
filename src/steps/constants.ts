@@ -7,9 +7,15 @@ import {
 export const Steps = {
   ACCOUNT: 'fetch-account',
   USERS: 'fetch-users',
+  SCOPES: 'fetch-scopes',
+  SCOPE_RELATIONSHIPS: 'build-scope-relationships',
+  SCOPE_USER_RELATIONSHIPS: 'build-scope-user-relationships',
 };
 
-export const Entities: Record<'ACCOUNT' | 'USER', StepEntityMetadata> = {
+export const Entities: Record<
+  'ACCOUNT' | 'USER' | 'SCOPE',
+  StepEntityMetadata
+> = {
   ACCOUNT: {
     resourceName: 'Account',
     _type: 'csw_account',
@@ -44,16 +50,53 @@ export const Entities: Record<'ACCOUNT' | 'USER', StepEntityMetadata> = {
       ],
     },
   },
+  SCOPE: {
+    resourceName: 'Scope',
+    _type: 'csw_scope',
+    _class: ['Group'],
+    schema: {
+      properties: {
+        id: { type: 'string' },
+        shortName: { type: 'string' },
+        name: { type: 'string' },
+        description: { type: ['string', 'null'] },
+        vrfID: { type: 'number' },
+        parentAppScopeID: { type: 'string' },
+        childAppScopeIDs: { type: 'array', items: { type: 'string' } },
+      },
+      required: [
+        'id',
+        'shortName',
+        'name',
+        'description',
+        'vrfID',
+        'parentAppScopeID',
+        'childAppScopeIDs',
+      ],
+    },
+  },
 };
 
 export const Relationships: Record<
-  'ACCOUNT_HAS_USER',
+  'ACCOUNT_HAS_USER' | 'SCOPE_HAS_SCOPE' | 'SCOPE_ASSIGNED_USER',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
     _type: 'csw_account_has_user',
     sourceType: Entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
+    targetType: Entities.USER._type,
+  },
+  SCOPE_HAS_SCOPE: {
+    _type: 'csw_scope_has_scope',
+    sourceType: Entities.SCOPE._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.SCOPE._type,
+  },
+  SCOPE_ASSIGNED_USER: {
+    _type: 'csw_scope_assigned_user',
+    sourceType: Entities.SCOPE._type,
+    _class: RelationshipClass.ASSIGNED,
     targetType: Entities.USER._type,
   },
 };

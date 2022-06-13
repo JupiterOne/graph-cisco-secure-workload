@@ -19,3 +19,36 @@ test('fetch-users', async () => {
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
 });
+
+test('fetch-scopes', async () => {
+  recording = setupProjectRecording({
+    directory: __dirname,
+    name: 'fetch-scopes',
+  });
+
+  const stepConfig = buildStepTestConfigForStep(Steps.SCOPES);
+  const stepResult = await executeStepWithDependencies(stepConfig);
+  expect(stepResult).toMatchStepMetadata(stepConfig);
+});
+
+test('build-scope-relationships', async () => {
+  recording = setupProjectRecording({
+    directory: __dirname,
+    name: 'build-scope-relationships',
+  });
+
+  const stepConfig = buildStepTestConfigForStep(Steps.SCOPE_RELATIONSHIPS);
+  const stepResult = await executeStepWithDependencies(stepConfig);
+  expect(stepResult).toMatchStepMetadata(stepConfig);
+});
+
+test('build-scope-user-relationships', async () => {
+  recording = setupProjectRecording({
+    directory: __dirname,
+    name: 'build-scope-user-relationships',
+  });
+
+  const stepConfig = buildStepTestConfigForStep(Steps.SCOPE_USER_RELATIONSHIPS);
+  const stepResult = await executeStepWithDependencies(stepConfig);
+  expect(stepResult).toMatchStepMetadata(stepConfig);
+});

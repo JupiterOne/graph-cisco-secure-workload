@@ -80,6 +80,7 @@ The following entities are created:
 | Resources | Entity `_type` | Entity `_class` |
 | --------- | -------------- | --------------- |
 | Account   | `csw_account`  | `Account`       |
+| Scope     | `csw_scope`    | `Group`         |
 | User      | `csw_user`     | `User`          |
 
 ### Relationships
@@ -89,6 +90,8 @@ The following relationships are created:
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
 | --------------------- | --------------------- | --------------------- |
 | `csw_account`         | **HAS**               | `csw_user`            |
+| `csw_scope`           | **ASSIGNED**          | `csw_user`            |
+| `csw_scope`           | **HAS**               | `csw_scope`           |
 
 <!--
 ********************************************************************************

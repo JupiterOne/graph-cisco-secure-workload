@@ -11,6 +11,16 @@ export interface SecureWorkloadUser {
   disabled_at?: number;
 }
 
+export interface SecureWorkloadScope {
+  id: string;
+  short_name: string;
+  name: string;
+  description: string;
+  vrf_id: string;
+  parent_app_scope_id: string;
+  child_app_scope_ids: string[];
+}
+
 // Those can be useful to a degree, but often they're just full of optional
 // values. Understanding the response data may be more reliably accomplished by
 // reviewing the API response recordings produced by testing the wrapper client

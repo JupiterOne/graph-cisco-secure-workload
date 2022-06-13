@@ -7,7 +7,7 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import { IntegrationConfig } from './config';
-import { SecureWorkloadUser } from './types';
+import { SecureWorkloadScope, SecureWorkloadUser } from './types';
 
 import { createHmac, createHash } from 'crypto';
 
@@ -92,6 +92,21 @@ export class APIClient {
     return (await response.json()) as SecureWorkloadUser[];
   }
 
+  public async fetchScopes(): Promise<SecureWorkloadScope[]> {
+    const headers = this.generateHeaders('GET', '/openapi/v1/app_scopes');
+    const URI = this.config.apiURI + '/openapi/v1/app_scopes';
+    const response: Response = await fetch(URI, { headers: headers });
+
+    if (!response.ok) {
+      this.handleApiError(
+        response,
+        this.config.apiURI + '/openapi/v1/app_scopes',
+      );
+    }
+
+    return (await response.json()) as SecureWorkloadScope[];
+  }
+
   private handleApiError(err: any, endpoint: string): void {
     if (err.status === 401) {
       throw new IntegrationProviderAuthenticationError({
@@ -126,6 +141,21 @@ export class APIClient {
 
     for (const user of users) {
       await iteratee(user);
+    }
+  }
+
+  /**
+   * Iterates each scope resource in the provider.
+   *
+   * @param iteratee receives each resource to produce entities/relationships
+   */
+  public async iterateScopes(
+    iteratee: ResourceIteratee<SecureWorkloadScope>,
+  ): Promise<void> {
+    const scopes: SecureWorkloadScope[] = await this.fetchScopes();
+
+    for (const scope of scopes) {
+      await iteratee(scope);
     }
   }
 }
