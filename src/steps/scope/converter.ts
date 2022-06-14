@@ -20,7 +20,7 @@ export function createScopeEntity(scope: SecureWorkloadScope): Entity {
         id: scope.id,
         shortName: scope.short_name,
         name: scope.name,
-        description: scope.description || '', // Must be string by entity schema
+        description: scope.description ?? undefined,
         vrfID: scope.vrf_id,
         parentAppScopeID: scope.parent_app_scope_id,
         childAppScopeIDs: scope.child_app_scope_ids,

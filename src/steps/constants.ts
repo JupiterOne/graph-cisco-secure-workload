@@ -68,7 +68,6 @@ export const Entities: Record<
         'id',
         'shortName',
         'name',
-        'description',
         'vrfID',
         'parentAppScopeID',
         'childAppScopeIDs',
