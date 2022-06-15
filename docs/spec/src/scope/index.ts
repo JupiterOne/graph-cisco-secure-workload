@@ -17,7 +17,7 @@ export const scopeSpec: StepSpec<IntegrationConfig>[] = [
       },
     ],
     relationships: [],
-    dependsOn: ['fetch-users'],
+    dependsOn: [],
     implemented: true,
   },
   {
@@ -44,18 +44,18 @@ export const scopeSpec: StepSpec<IntegrationConfig>[] = [
      * n/a
      * PATTERN: Build Child Relationships
      */
-    id: 'build-scope-user-relationships',
-    name: 'Build Scope -> User Relationships',
+    id: 'build-user-scope-relationships',
+    name: 'Build User -> Scope Relationships',
     entities: [],
     relationships: [
       {
-        _type: 'csw_scope_assigned_user',
-        sourceType: 'csw_scope',
+        _type: 'csw_user_assigned_scope',
+        sourceType: 'csw_user',
         _class: RelationshipClass.ASSIGNED,
-        targetType: 'csw_user',
+        targetType: 'csw_scope',
       },
     ],
-    dependsOn: ['fetch-scopes'],
+    dependsOn: ['fetch-scopes', 'fetch-users'],
     implemented: true,
   },
 ];

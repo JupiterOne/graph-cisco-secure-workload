@@ -9,7 +9,7 @@ export const Steps = {
   USERS: 'fetch-users',
   SCOPES: 'fetch-scopes',
   SCOPE_RELATIONSHIPS: 'build-scope-relationships',
-  SCOPE_USER_RELATIONSHIPS: 'build-scope-user-relationships',
+  USER_SCOPE_RELATIONSHIPS: 'build-user-scope-relationships',
 };
 
 export const Entities: Record<
@@ -77,7 +77,7 @@ export const Entities: Record<
 };
 
 export const Relationships: Record<
-  'ACCOUNT_HAS_USER' | 'SCOPE_HAS_SCOPE' | 'SCOPE_ASSIGNED_USER',
+  'ACCOUNT_HAS_USER' | 'SCOPE_HAS_SCOPE' | 'USER_ASSIGNED_SCOPE',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -92,10 +92,10 @@ export const Relationships: Record<
     _class: RelationshipClass.HAS,
     targetType: Entities.SCOPE._type,
   },
-  SCOPE_ASSIGNED_USER: {
-    _type: 'csw_scope_assigned_user',
-    sourceType: Entities.SCOPE._type,
+  USER_ASSIGNED_SCOPE: {
+    _type: 'csw_user_assigned_scope',
+    sourceType: Entities.USER._type,
     _class: RelationshipClass.ASSIGNED,
-    targetType: Entities.USER._type,
+    targetType: Entities.SCOPE._type,
   },
 };

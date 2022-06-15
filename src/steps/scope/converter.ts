@@ -41,13 +41,13 @@ export function createScopeRelationship(
   });
 }
 
-export function createScopeUserRelationship(
-  scope: Entity,
+export function createUserScopeRelationship(
   user: Entity,
+  scope: Entity,
 ): Relationship {
   return createDirectRelationship({
     _class: RelationshipClass.ASSIGNED,
-    from: scope,
-    to: user,
+    from: user,
+    to: scope,
   });
 }

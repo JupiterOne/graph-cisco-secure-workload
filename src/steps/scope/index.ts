@@ -12,7 +12,7 @@ import { Entities, Steps, Relationships } from '../constants';
 import {
   createScopeEntity,
   createScopeRelationship,
-  createScopeUserRelationship,
+  createUserScopeRelationship,
 } from './converter';
 
 export async function fetchScopes({
@@ -60,7 +60,7 @@ export async function buildScopeRelationships({
   );
 }
 
-export async function buildScopeUserRelationships({
+export async function buildUserScopeRelationships({
   jobState,
   logger,
 }: IntegrationStepExecutionContext<IntegrationConfig>) {
@@ -90,7 +90,7 @@ export async function buildScopeUserRelationships({
       }
 
       await jobState.addRelationship(
-        createScopeUserRelationship(scopeEntity, userEntity),
+        createUserScopeRelationship(userEntity, scopeEntity),
       );
     },
   );
@@ -102,7 +102,7 @@ export const scopeSteps: IntegrationStep<IntegrationConfig>[] = [
     name: 'Fetch Scopes',
     entities: [Entities.SCOPE],
     relationships: [],
-    dependsOn: [Steps.USERS],
+    dependsOn: [],
     executionHandler: fetchScopes,
   },
   {
@@ -114,11 +114,11 @@ export const scopeSteps: IntegrationStep<IntegrationConfig>[] = [
     executionHandler: buildScopeRelationships,
   },
   {
-    id: Steps.SCOPE_USER_RELATIONSHIPS,
-    name: 'Build Scope -> User Relationships',
+    id: Steps.USER_SCOPE_RELATIONSHIPS,
+    name: 'Build User -> Scope Relationships',
     entities: [],
-    relationships: [Relationships.SCOPE_ASSIGNED_USER],
-    dependsOn: [Steps.SCOPES],
-    executionHandler: buildScopeUserRelationships,
+    relationships: [Relationships.USER_ASSIGNED_SCOPE],
+    dependsOn: [Steps.SCOPES, Steps.USERS],
+    executionHandler: buildUserScopeRelationships,
   },
 ];

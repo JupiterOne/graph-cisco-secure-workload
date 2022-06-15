@@ -90,8 +90,8 @@ The following relationships are created:
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
 | --------------------- | --------------------- | --------------------- |
 | `csw_account`         | **HAS**               | `csw_user`            |
-| `csw_scope`           | **ASSIGNED**          | `csw_user`            |
 | `csw_scope`           | **HAS**               | `csw_scope`           |
+| `csw_user`            | **ASSIGNED**          | `csw_scope`           |
 
 <!--
 ********************************************************************************

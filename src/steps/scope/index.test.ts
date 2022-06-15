@@ -31,13 +31,13 @@ test('build-scope-relationships', async () => {
   expect(stepResult).toMatchStepMetadata(stepConfig);
 });
 
-test('build-scope-user-relationships', async () => {
+test('build-user-scope-relationships', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
-    name: 'build-scope-user-relationships',
+    name: 'build-user-scope-relationships',
   });
 
-  const stepConfig = buildStepTestConfigForStep(Steps.SCOPE_USER_RELATIONSHIPS);
+  const stepConfig = buildStepTestConfigForStep(Steps.USER_SCOPE_RELATIONSHIPS);
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
 });
