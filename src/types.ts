@@ -2,23 +2,23 @@
 
 export interface SecureWorkloadUser {
   id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
   app_scope_id?: string;
-  role_ids: string[];
-  bypass_external_auth: boolean;
+  role_ids?: string[];
+  bypass_external_auth?: boolean;
   disabled_at?: number;
 }
 
 export interface SecureWorkloadScope {
   id: string;
-  short_name: string;
-  name: string;
-  description: string;
-  vrf_id: string;
-  parent_app_scope_id: string;
-  child_app_scope_ids: string[];
+  short_name?: string;
+  name?: string;
+  description?: string;
+  vrf_id?: string;
+  parent_app_scope_id?: string;
+  child_app_scope_ids?: string[];
 }
 
 // Those can be useful to a degree, but often they're just full of optional
