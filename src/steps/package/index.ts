@@ -36,8 +36,8 @@ export async function fetchPackages({
 
       for (const csw_package of packages) {
         const packageEntity = createPackageEntity(csw_package, workload.uuid);
-        jobState.addEntity(packageEntity);
-        jobState.addRelationship(
+        await jobState.addEntity(packageEntity);
+        await jobState.addRelationship(
           createWorkloadPackageRelationship(workloadEntity, packageEntity),
         );
       }
