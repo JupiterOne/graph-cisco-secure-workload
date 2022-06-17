@@ -16,7 +16,13 @@ export const Steps = {
 };
 
 export const Entities: Record<
-  'ACCOUNT' | 'USER' | 'SCOPE' | 'WORKLOAD' | 'INTERFACE' | 'PACKAGE',
+  | 'ACCOUNT'
+  | 'USER'
+  | 'SCOPE'
+  | 'WORKLOAD'
+  | 'INTERFACE'
+  | 'PACKAGE'
+  | 'PROJECT_VULNERABILITY',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -123,6 +129,34 @@ export const Entities: Record<
         version: { type: 'string' },
       },
       required: ['name'],
+    },
+  },
+  PROJECT_VULNERABILITY: {
+    resourceName: 'Workload Vulnerability',
+    _type: 'csw_workload_finding',
+    _class: ['Findings'],
+    schema: {
+      properties: {
+        cveID: { type: 'string' },
+        v2Score: { type: 'number' },
+        v2AccessComplexity: { type: 'string' },
+        v2AccessVector: { type: 'string' },
+        v2Authentication: { type: 'string' },
+        v2AvailabilityImpact: { type: 'string' },
+        v2ConfidentialityImpact: { type: 'string' },
+        v2IntegrityImpact: { type: 'string' },
+        v2Severity: { type: 'string' },
+        v3Score: { type: 'number' },
+        v3AttackComplexity: { type: 'string' },
+        v3AttackVector: { type: 'string' },
+        v3AvailabilityImpact: { type: 'string' },
+        v3BaseSeverety: { type: 'string' },
+        v3ConfidentialityImpact: { type: 'string' },
+        v3IntegrityImpact: { type: 'string' },
+        v3PrivilegesRequired: { type: 'string' },
+        v3Scope: { type: 'string' },
+        v3UserInteraction: { type: 'string' },
+      },
     },
   },
 };
