@@ -9,7 +9,7 @@ afterEach(async () => {
   await recording.stop();
 });
 
-test('fetch-workloads', async () => {
+test.skip('fetch-workloads', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'fetch-workloads',
@@ -20,7 +20,7 @@ test('fetch-workloads', async () => {
   expect(stepResult).toMatchStepMetadata(stepConfig);
 }, 20000);
 
-test('build-interface-scope-relationships', async () => {
+test.skip('build-interface-scope-relationships', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'build-interface-scope-relationships',

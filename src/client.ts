@@ -108,13 +108,18 @@ export class APIClient {
     return (await response.json()) as SecureWorkloadScope[];
   }
 
-  public async fetchWorkloads(): Promise<string[]> {
+  public async fetchWorkloads(
+    offset?: string,
+  ): Promise<{ offset?: string; results: { uuid: string }[] }> {
     const body = JSON.stringify({
       filter: {
         type: 'eq',
         field: 'resource_type',
         value: 'WORKLOAD',
       },
+      dimensions: ['uuid'],
+      limit: 5,
+      offset: offset,
     });
     const headers = this.generateHeaders(
       'POST',
@@ -131,11 +136,8 @@ export class APIClient {
     if (!response.ok) {
       this.handleApiError(response, URI);
     }
-    const uuids = new Set(
-      (await response.json()).results.map((item) => item.uuid),
-    ) as Set<string>;
 
-    return [...uuids];
+    return await response.json();
   }
 
   public async fetchWorkload(uuid: string): Promise<SecureWorkloadProject> {
@@ -209,10 +211,26 @@ export class APIClient {
   public async iterateWorkloads(
     iteratee: ResourceIteratee<SecureWorkloadProject>,
   ): Promise<void> {
-    const workloadUUIDs: string[] = await this.fetchWorkloads();
+    let workloads: {
+      offset?: string;
+      results: {
+        uuid: string;
+      }[];
+    };
 
-    for (const workloadUUID of workloadUUIDs) {
-      await iteratee(await this.fetchWorkload(workloadUUID));
+    let offset: string | undefined = undefined;
+
+    const uuids = new Set<string>();
+
+    do {
+      workloads = await this.fetchWorkloads(offset);
+
+      offset = workloads.offset;
+      workloads.results.forEach((workload) => uuids.add(workload.uuid));
+    } while (workloads.offset);
+
+    for (const uuid of uuids) {
+      await iteratee(await this.fetchWorkload(uuid));
     }
   }
 }

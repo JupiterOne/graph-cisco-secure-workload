@@ -37,8 +37,6 @@ export function createInterfaceEntity(
   csw_interface: SecureWorkloadInterface,
   workloadUUID: string,
 ): Entity {
-  const tags = csw_interface.tags;
-  delete csw_interface.tags;
   const entity = createIntegrationEntity({
     entityData: {
       source: csw_interface,
@@ -61,24 +59,14 @@ export function createInterfaceEntity(
       },
     },
   });
-  if (tags) {
+  if (csw_interface.tags) {
     assignTags(
       entity,
-      Object.entries(tags).map(([key, value]) => ({
-        /**
-         * 1: Converts snake_case to camelCase
-         * 2: Converts / to .
-         * Example:
-         * example_tag_1/example_Tag__2 => exampleTag1.exampleTag2
-         */
-        key: key
-          .replace(/_([a-z])/g, (_, $1) => $1.toUpperCase())
-          .replace(/_/g, '')
-          .replace(/\//g, '.'),
+      Object.entries(csw_interface.tags).map(([key, value]) => ({
+        key,
         value: (Array.isArray(value) ? value.join(', ') : value) as string,
       })),
     );
-    csw_interface.tags = tags;
   }
   return entity;
 }
