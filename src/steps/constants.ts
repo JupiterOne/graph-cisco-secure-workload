@@ -12,10 +12,11 @@ export const Steps = {
   USER_SCOPE_RELATIONSHIPS: 'build-user-scope-relationships',
   WORKLOADS: 'fetch-workloads',
   INTERFACE_SCOPE_RELATIONSHIPS: 'build-interface-scope-relationships',
+  PACKAGES: 'fetch-packages',
 };
 
 export const Entities: Record<
-  'ACCOUNT' | 'USER' | 'SCOPE' | 'WORKLOAD' | 'INTERFACE',
+  'ACCOUNT' | 'USER' | 'SCOPE' | 'WORKLOAD' | 'INTERFACE' | 'PACKAGE',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -110,6 +111,20 @@ export const Entities: Record<
       required: [],
     },
   },
+  PACKAGE: {
+    resourceName: 'Package',
+    _type: 'csw_package',
+    _class: ['CodeModule'],
+    schema: {
+      properties: {
+        architecture: { type: 'string' },
+        name: { type: 'string' },
+        publisher: { type: 'string' },
+        version: { type: 'string' },
+      },
+      required: ['name'],
+    },
+  },
 };
 
 export const Relationships: Record<
@@ -117,7 +132,8 @@ export const Relationships: Record<
   | 'SCOPE_HAS_SCOPE'
   | 'USER_ASSIGNED_SCOPE'
   | 'INTERFACE_HAS_SCOPE'
-  | 'WORKLOAD_HAS_INTERFACE',
+  | 'WORKLOAD_HAS_INTERFACE'
+  | 'WORKLOAD_HAS_PACKAGE',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -149,5 +165,11 @@ export const Relationships: Record<
     sourceType: Entities.WORKLOAD._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.INTERFACE._type,
+  },
+  WORKLOAD_HAS_PACKAGE: {
+    _type: 'csw_project_has_package',
+    sourceType: Entities.WORKLOAD._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.PACKAGE._type,
   },
 };

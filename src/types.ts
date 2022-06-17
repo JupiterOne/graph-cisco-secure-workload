@@ -43,6 +43,13 @@ export interface SecureWorkloadInterface {
   tags?: any;
 }
 
+export interface SecureWorkloadPackage {
+  architecture?: string;
+  name?: string;
+  publisher?: string;
+  version?: string;
+}
+
 // Those can be useful to a degree, but often they're just full of optional
 // values. Understanding the response data may be more reliably accomplished by
 // reviewing the API response recordings produced by testing the wrapper client

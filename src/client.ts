@@ -8,6 +8,7 @@ import {
 
 import { IntegrationConfig } from './config';
 import {
+  SecureWorkloadPackage,
   SecureWorkloadProject,
   SecureWorkloadScope,
   SecureWorkloadUser,
@@ -118,7 +119,7 @@ export class APIClient {
         value: 'WORKLOAD',
       },
       dimensions: ['uuid'],
-      limit: 5,
+      limit: 100,
       offset: offset,
     });
     const headers = this.generateHeaders(
@@ -149,6 +150,20 @@ export class APIClient {
       this.handleApiError(response, URI);
     }
     return (await response.json()) as SecureWorkloadProject;
+  }
+
+  public async fetchPackages(uuid: string): Promise<SecureWorkloadPackage[]> {
+    const headers = this.generateHeaders(
+      'GET',
+      `/openapi/v1/workload/${uuid}/packages`,
+    );
+    const URI = this.config.apiURI + `/openapi/v1/workload/${uuid}/packages`;
+    const response: Response = await fetch(URI, { headers: headers });
+
+    if (!response.ok) {
+      this.handleApiError(response, URI);
+    }
+    return (await response.json()) as SecureWorkloadPackage[];
   }
 
   private handleApiError(err: any, endpoint: string): void {
@@ -231,6 +246,24 @@ export class APIClient {
 
     for (const uuid of uuids) {
       await iteratee(await this.fetchWorkload(uuid));
+    }
+  }
+
+  /**
+   * Iterates each package resource in the provider.
+   *
+   * @param iteratee receives each resource to produce entities/relationships
+   */
+  public async iteratePackages(
+    iteratee: ResourceIteratee<SecureWorkloadPackage>,
+    workloadUUID: string,
+  ): Promise<void> {
+    const scopes: SecureWorkloadPackage[] = await this.fetchPackages(
+      workloadUUID,
+    );
+
+    for (const scope of scopes) {
+      await iteratee(scope);
     }
   }
 }
