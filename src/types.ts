@@ -28,7 +28,7 @@ export interface SecureWorkloadProject {
   last_software_update?: number;
   platform?: string;
   uuid: string;
-  windows_enforcement_modestring?: string;
+  windows_enforcement_mode?: string;
 }
 
 export interface SecureWorkloadInterface {

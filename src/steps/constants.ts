@@ -82,12 +82,12 @@ export const Entities: Record<
     _class: ['Project'],
     schema: {
       properties: {
-        agent_type: { type: 'string' },
-        host_name: { type: 'string' },
-        last_software_update: { type: 'string' },
+        agentType: { type: 'string' },
+        hostName: { type: 'string' },
+        lastSoftwareUpdate: { type: 'string' },
         platform: { type: 'string' },
         uuid: { type: 'string' },
-        windows_enforcement_modestring: { type: 'string' },
+        windowsEnforcementMode: { type: 'string' },
       },
       required: ['uuid'],
     },

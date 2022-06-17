@@ -25,7 +25,7 @@ export function createProjectEntity(project: SecureWorkloadProject): Entity {
         lastSoftwareUpdate: project.last_software_update,
         platform: project.platform,
         uuid: project.uuid,
-        windowsEnforcementModestring: project.windows_enforcement_modestring,
+        windowsEnforcementMode: project.windows_enforcement_mode,
         name: project.host_name,
         displayName: project.host_name,
       },
