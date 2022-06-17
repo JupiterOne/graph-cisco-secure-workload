@@ -118,7 +118,7 @@ export class APIClient {
         value: 'WORKLOAD',
       },
       dimensions: ['uuid'],
-      limit: 5,
+      limit: 100,
       offset: offset,
     });
     const headers = this.generateHeaders(
