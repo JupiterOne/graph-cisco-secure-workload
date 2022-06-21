@@ -13,7 +13,6 @@ import { createHash } from 'crypto';
 
 export function createPackageEntity(
   csw_package: SecureWorkloadPackage,
-  workloadUUID: string,
 ): Entity {
   return createIntegrationEntity({
     entityData: {
@@ -21,11 +20,9 @@ export function createPackageEntity(
       assign: {
         _type: Entities.PACKAGE._type,
         _class: Entities.PACKAGE._class,
-        _key:
-          workloadUUID +
-          createHash('sha256')
-            .update(JSON.stringify(csw_package))
-            .digest('hex'),
+        _key: createHash('sha256')
+          .update(JSON.stringify(csw_package))
+          .digest('hex'),
         architecture: csw_package.architecture,
         name: csw_package.name,
         publisher: csw_package.publisher,
