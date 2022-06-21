@@ -18,9 +18,9 @@ test.skip('fetch-workloads', async () => {
   const stepConfig = buildStepTestConfigForStep(Steps.WORKLOADS);
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
-}, 20000);
+});
 
-test.skip('build-interface-scope-relationships', async () => {
+test('build-interface-scope-relationships', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'build-interface-scope-relationships',
@@ -31,4 +31,4 @@ test.skip('build-interface-scope-relationships', async () => {
   );
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
-}, 20000);
+}, 40000);
