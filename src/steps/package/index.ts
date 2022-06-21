@@ -13,6 +13,8 @@ import {
   createWorkloadPackageRelationship,
 } from './converter';
 
+import { createHash } from 'crypto';
+
 export async function fetchPackages({
   instance,
   jobState,
@@ -35,8 +37,14 @@ export async function fetchPackages({
       const packages = await apiClient.fetchPackages(workload.uuid);
 
       for (const csw_package of packages) {
-        const packageEntity = createPackageEntity(csw_package, workload.uuid);
-        await jobState.addEntity(packageEntity);
+        const key = createHash('sha256')
+          .update(JSON.stringify(csw_package))
+          .digest('hex');
+        let packageEntity = await jobState.findEntity(key);
+        if (!packageEntity) {
+          packageEntity = createPackageEntity(csw_package);
+          await jobState.addEntity(packageEntity);
+        }
         await jobState.addRelationship(
           createWorkloadPackageRelationship(workloadEntity, packageEntity),
         );
