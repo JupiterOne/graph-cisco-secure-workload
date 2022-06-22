@@ -168,7 +168,7 @@ export const Relationships: Record<
   | 'INTERFACE_HAS_SCOPE'
   | 'WORKLOAD_HAS_INTERFACE'
   | 'WORKLOAD_HAS_PACKAGE'
-  | 'WORKLOAD_HAS_FINDING'
+  | 'WORKLOAD_HAS_WORKLOAD_FINDING'
   | 'PACKAGE_HAS_WORKLOAD_FINDING',
   StepRelationshipMetadata
 > = {
@@ -208,7 +208,7 @@ export const Relationships: Record<
     _class: RelationshipClass.HAS,
     targetType: Entities.PACKAGE._type,
   },
-  WORKLOAD_HAS_FINDING: {
+  WORKLOAD_HAS_WORKLOAD_FINDING: {
     _type: 'csw_project_has_workload_finding',
     sourceType: Entities.WORKLOAD._type,
     _class: RelationshipClass.HAS,

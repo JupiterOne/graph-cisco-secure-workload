@@ -104,7 +104,7 @@ export const packageSteps: IntegrationStep<IntegrationConfig>[] = [
     entities: [Entities.PACKAGE, Entities.WORKLOAD_FINDING],
     relationships: [
       Relationships.WORKLOAD_HAS_PACKAGE,
-      Relationships.WORKLOAD_HAS_FINDING,
+      Relationships.WORKLOAD_HAS_WORKLOAD_FINDING,
       Relationships.PACKAGE_HAS_WORKLOAD_FINDING,
     ],
     dependsOn: [Steps.WORKLOADS],
