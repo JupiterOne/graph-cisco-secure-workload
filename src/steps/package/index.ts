@@ -37,8 +37,16 @@ export async function fetchPackagesWorkloadFindings({
         return;
       }
 
+      /**
+       * Contains a mapping of package info to set of package keys
+       *
+       * Key format: name:version
+       * Value format: Set<string>
+       */
       const packageKeys = {};
 
+      // Iterates packages in the workload and creates
+      // Workload -> Package relationships.
       await apiClient.iteratePackages(async (csw_package) => {
         const package_key = createHash('sha256')
           .update(JSON.stringify(csw_package))
@@ -54,14 +62,18 @@ export async function fetchPackagesWorkloadFindings({
           createWorkloadPackageRelationship(workloadEntity, packageEntity),
         );
 
+        // Adds the packageEntity's key to the packageKey object's set
         const key = `${csw_package.name}:${csw_package.version}`;
 
         if (!packageKeys[key]) {
           packageKeys[key] = new Set<string>();
         }
+
         packageKeys[key].add(packageEntity._key);
       }, workload.uuid);
 
+      // Iterates findings in the workload and creates relationships
+      // between Workloads, Packages, and Workload Findings.
       await apiClient.iterateWorkloadFindings(async (workloadFinding) => {
         const workloadFindingEntity = await jobState.addEntity(
           createWorkloadFindingEntity(workloadFinding, workload.uuid),
@@ -74,7 +86,10 @@ export async function fetchPackagesWorkloadFindings({
           ),
         );
 
+        // Iterates over each package the finding relates to.
         for (const package_info of workloadFinding.package_infos || []) {
+          // Iterates over each package used by this workload
+          // with the matching name and version.
           for (const package_key of packageKeys[
             `${package_info.name}:${package_info.version}`
           ]) {
