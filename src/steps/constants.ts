@@ -12,11 +12,17 @@ export const Steps = {
   USER_SCOPE_RELATIONSHIPS: 'build-user-scope-relationships',
   WORKLOADS: 'fetch-workloads',
   INTERFACE_SCOPE_RELATIONSHIPS: 'build-interface-scope-relationships',
-  PACKAGES: 'fetch-packages',
+  PACKAGES_WORKLOAD_FINDINGS: 'fetch-packages-workload-findings',
 };
 
 export const Entities: Record<
-  'ACCOUNT' | 'USER' | 'SCOPE' | 'WORKLOAD' | 'INTERFACE' | 'PACKAGE',
+  | 'ACCOUNT'
+  | 'USER'
+  | 'SCOPE'
+  | 'WORKLOAD'
+  | 'INTERFACE'
+  | 'PACKAGE'
+  | 'WORKLOAD_FINDING',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -125,6 +131,34 @@ export const Entities: Record<
       required: ['name'],
     },
   },
+  WORKLOAD_FINDING: {
+    resourceName: 'Workload Vulnerability',
+    _type: 'csw_workload_finding',
+    _class: ['Finding'],
+    schema: {
+      properties: {
+        cveID: { type: 'string' },
+        v2Score: { type: 'number' },
+        v2AccessComplexity: { type: 'string' },
+        v2AccessVector: { type: 'string' },
+        v2Authentication: { type: 'string' },
+        v2AvailabilityImpact: { type: 'string' },
+        v2ConfidentialityImpact: { type: 'string' },
+        v2IntegrityImpact: { type: 'string' },
+        v2Severity: { type: 'string' },
+        v3Score: { type: 'number' },
+        v3AttackComplexity: { type: 'string' },
+        v3AttackVector: { type: 'string' },
+        v3AvailabilityImpact: { type: 'string' },
+        v3BaseSeverety: { type: 'string' },
+        v3ConfidentialityImpact: { type: 'string' },
+        v3IntegrityImpact: { type: 'string' },
+        v3PrivilegesRequired: { type: 'string' },
+        v3Scope: { type: 'string' },
+        v3UserInteraction: { type: 'string' },
+      },
+    },
+  },
 };
 
 export const Relationships: Record<
@@ -133,7 +167,9 @@ export const Relationships: Record<
   | 'USER_ASSIGNED_SCOPE'
   | 'INTERFACE_HAS_SCOPE'
   | 'WORKLOAD_HAS_INTERFACE'
-  | 'WORKLOAD_HAS_PACKAGE',
+  | 'WORKLOAD_HAS_PACKAGE'
+  | 'WORKLOAD_HAS_FINDING'
+  | 'PACKAGE_HAS_WORKLOAD_FINDING',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -171,5 +207,17 @@ export const Relationships: Record<
     sourceType: Entities.WORKLOAD._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.PACKAGE._type,
+  },
+  WORKLOAD_HAS_FINDING: {
+    _type: 'csw_project_has_workload_finding',
+    sourceType: Entities.WORKLOAD._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.WORKLOAD_FINDING._type,
+  },
+  PACKAGE_HAS_WORKLOAD_FINDING: {
+    _type: 'csw_package_has_workload_finding',
+    sourceType: Entities.PACKAGE._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.WORKLOAD_FINDING._type,
   },
 };
