@@ -77,11 +77,13 @@ https://github.com/JupiterOne/sdk/blob/main/docs/integrations/development.md
 
 The following entities are created:
 
-| Resources | Entity `_type` | Entity `_class` |
-| --------- | -------------- | --------------- |
-| Account   | `csw_account`  | `Account`       |
-| Scope     | `csw_scope`    | `Group`         |
-| User      | `csw_user`     | `User`          |
+| Resources | Entity `_type`  | Entity `_class` |
+| --------- | --------------- | --------------- |
+| Account   | `csw_account`   | `Account`       |
+| Interface | `csw_interface` | `Application`   |
+| Scope     | `csw_scope`     | `Group`         |
+| User      | `csw_user`      | `User`          |
+| Workload  | `csw_project`   | `Project`       |
 
 ### Relationships
 
@@ -90,6 +92,8 @@ The following relationships are created:
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
 | --------------------- | --------------------- | --------------------- |
 | `csw_account`         | **HAS**               | `csw_user`            |
+| `csw_interface`       | **HAS**               | `csw_scope`           |
+| `csw_project`         | **HAS**               | `csw_interface`       |
 | `csw_scope`           | **HAS**               | `csw_scope`           |
 | `csw_user`            | **ASSIGNED**          | `csw_scope`           |
 

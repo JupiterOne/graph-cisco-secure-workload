@@ -7,7 +7,11 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import { IntegrationConfig } from './config';
-import { SecureWorkloadScope, SecureWorkloadUser } from './types';
+import {
+  SecureWorkloadProject,
+  SecureWorkloadScope,
+  SecureWorkloadUser,
+} from './types';
 
 import { createHmac, createHash } from 'crypto';
 
@@ -74,7 +78,7 @@ export class APIClient {
     };
 
     if (checksum) {
-      headers['X-Tetration-Checksum'] = checksum;
+      headers['X-Tetration-Cksum'] = checksum;
     }
 
     return headers;
@@ -86,7 +90,7 @@ export class APIClient {
     const response: Response = await fetch(URI, { headers: headers });
 
     if (!response.ok) {
-      this.handleApiError(response, this.config.apiURI + '/openapi/v1/users');
+      this.handleApiError(response, URI);
     }
 
     return (await response.json()) as SecureWorkloadUser[];
@@ -98,13 +102,53 @@ export class APIClient {
     const response: Response = await fetch(URI, { headers: headers });
 
     if (!response.ok) {
-      this.handleApiError(
-        response,
-        this.config.apiURI + '/openapi/v1/app_scopes',
-      );
+      this.handleApiError(response, URI);
     }
 
     return (await response.json()) as SecureWorkloadScope[];
+  }
+
+  public async fetchWorkloads(
+    offset?: string,
+  ): Promise<{ offset?: string; results: { uuid: string }[] }> {
+    const body = JSON.stringify({
+      filter: {
+        type: 'eq',
+        field: 'resource_type',
+        value: 'WORKLOAD',
+      },
+      dimensions: ['uuid'],
+      limit: 100,
+      offset: offset,
+    });
+    const headers = this.generateHeaders(
+      'POST',
+      '/openapi/v1/inventory/search',
+      body,
+    );
+    const URI = this.config.apiURI + '/openapi/v1/inventory/search';
+    const response: Response = await fetch(URI, {
+      method: 'POST',
+      body: body,
+      headers: headers,
+    });
+
+    if (!response.ok) {
+      this.handleApiError(response, URI);
+    }
+
+    return await response.json();
+  }
+
+  public async fetchWorkload(uuid: string): Promise<SecureWorkloadProject> {
+    const headers = this.generateHeaders('GET', `/openapi/v1/workload/${uuid}`);
+    const URI = this.config.apiURI + `/openapi/v1/workload/${uuid}`;
+    const response: Response = await fetch(URI, { headers: headers });
+
+    if (!response.ok) {
+      this.handleApiError(response, URI);
+    }
+    return (await response.json()) as SecureWorkloadProject;
   }
 
   private handleApiError(err: any, endpoint: string): void {
@@ -156,6 +200,37 @@ export class APIClient {
 
     for (const scope of scopes) {
       await iteratee(scope);
+    }
+  }
+
+  /**
+   * Iterates each inventory resource in the provider.
+   *
+   * @param iteratee receives each resource to produce entities/relationships
+   */
+  public async iterateWorkloads(
+    iteratee: ResourceIteratee<SecureWorkloadProject>,
+  ): Promise<void> {
+    let workloads: {
+      offset?: string;
+      results: {
+        uuid: string;
+      }[];
+    };
+
+    let offset: string | undefined = undefined;
+
+    const uuids = new Set<string>();
+
+    do {
+      workloads = await this.fetchWorkloads(offset);
+
+      offset = workloads.offset;
+      workloads.results.forEach((workload) => uuids.add(workload.uuid));
+    } while (workloads.offset);
+
+    for (const uuid of uuids) {
+      await iteratee(await this.fetchWorkload(uuid));
     }
   }
 }
