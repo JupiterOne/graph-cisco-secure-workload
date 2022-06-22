@@ -9,13 +9,15 @@ afterEach(async () => {
   await recording.stop();
 });
 
-test('fetch-packages', async () => {
+test('fetch-packages-workload-findings', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
-    name: 'fetch-packages',
+    name: 'fetch-packages-workload-findings',
   });
 
-  const stepConfig = buildStepTestConfigForStep(Steps.PACKAGES);
+  const stepConfig = buildStepTestConfigForStep(
+    Steps.PACKAGES_WORKLOAD_FINDINGS,
+  );
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
-}, 40000);
+}, 120000);

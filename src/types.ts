@@ -55,8 +55,8 @@ export interface PackageInfo {
   version: string;
 }
 
-export interface SecureWorkloadProjectVulnerability {
-  cve_id?: string;
+export interface SecureWorkloadProjectFinding {
+  cve_id: string;
   package_infos?: PackageInfo[];
   v2_score?: number;
   v2_access_complexity?: string;

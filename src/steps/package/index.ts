@@ -10,12 +10,15 @@ import { SecureWorkloadProject } from '../../types';
 import { Entities, Relationships, Steps } from '../constants';
 import {
   createPackageEntity,
+  createPackageWorkloadFindingRelationship,
+  createWorkloadFindingEntity,
+  createWorkloadFindingRelationship,
   createWorkloadPackageRelationship,
 } from './converter';
 
 import { createHash } from 'crypto';
 
-export async function fetchPackages({
+export async function fetchPackagesWorkloadFindings({
   instance,
   jobState,
   logger,
@@ -34,32 +37,77 @@ export async function fetchPackages({
         return;
       }
 
-      const packages = await apiClient.fetchPackages(workload.uuid);
+      const packageKeys = {};
 
-      for (const csw_package of packages) {
-        const key = createHash('sha256')
+      await apiClient.iteratePackages(async (csw_package) => {
+        const package_key = createHash('sha256')
           .update(JSON.stringify(csw_package))
           .digest('hex');
-        let packageEntity = await jobState.findEntity(key);
+
+        let packageEntity = await jobState.findEntity(package_key);
         if (!packageEntity) {
           packageEntity = createPackageEntity(csw_package);
           await jobState.addEntity(packageEntity);
         }
+
         await jobState.addRelationship(
           createWorkloadPackageRelationship(workloadEntity, packageEntity),
         );
-      }
+
+        const key = `${csw_package.name}:${csw_package.version}`;
+
+        if (!packageKeys[key]) {
+          packageKeys[key] = new Set<string>();
+        }
+        packageKeys[key].add(packageEntity._key);
+      }, workload.uuid);
+
+      await apiClient.iterateWorkloadFindings(async (workloadFinding) => {
+        const workloadFindingEntity = await jobState.addEntity(
+          createWorkloadFindingEntity(workloadFinding, workload.uuid),
+        );
+
+        await jobState.addRelationship(
+          createWorkloadFindingRelationship(
+            workloadEntity,
+            workloadFindingEntity,
+          ),
+        );
+
+        for (const package_info of workloadFinding.package_infos || []) {
+          for (const package_key of packageKeys[
+            `${package_info.name}:${package_info.version}`
+          ]) {
+            const package_entity = await jobState.findEntity(package_key);
+
+            if (!package_entity) {
+              continue;
+            }
+
+            await jobState.addRelationship(
+              createPackageWorkloadFindingRelationship(
+                package_entity,
+                workloadFindingEntity,
+              ),
+            );
+          }
+        }
+      }, workload.uuid);
     },
   );
 }
 
 export const packageSteps: IntegrationStep<IntegrationConfig>[] = [
   {
-    id: Steps.PACKAGES,
-    name: 'Fetch Packages',
-    entities: [Entities.PACKAGE],
-    relationships: [Relationships.WORKLOAD_HAS_PACKAGE],
+    id: Steps.PACKAGES_WORKLOAD_FINDINGS,
+    name: 'Fetch Packages And Workload Findings',
+    entities: [Entities.PACKAGE, Entities.WORKLOAD_FINDING],
+    relationships: [
+      Relationships.WORKLOAD_HAS_PACKAGE,
+      Relationships.WORKLOAD_HAS_FINDING,
+      Relationships.PACKAGE_HAS_WORKLOAD_FINDING,
+    ],
     dependsOn: [Steps.WORKLOADS],
-    executionHandler: fetchPackages,
+    executionHandler: fetchPackagesWorkloadFindings,
   },
 ];
