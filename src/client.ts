@@ -276,8 +276,8 @@ export class APIClient {
    * @param iteratee receives each resource to produce entities/relationships
    */
   public async iteratePackages(
-    iteratee: ResourceIteratee<SecureWorkloadPackage>,
     workloadUUID: string,
+    iteratee: ResourceIteratee<SecureWorkloadPackage>,
   ): Promise<void> {
     const scopes: SecureWorkloadPackage[] = await this.fetchPackages(
       workloadUUID,
@@ -294,8 +294,8 @@ export class APIClient {
    * @param iteratee receives each resource to produce entities/relationships
    */
   public async iterateWorkloadFindings(
-    iteratee: ResourceIteratee<SecureWorkloadProjectFinding>,
     workloadUUID: string,
+    iteratee: ResourceIteratee<SecureWorkloadProjectFinding>,
   ): Promise<void> {
     const scopes: SecureWorkloadProjectFinding[] =
       await this.fetchWorkloadFindings(workloadUUID);

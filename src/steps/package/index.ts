@@ -47,7 +47,7 @@ export async function fetchPackagesWorkloadFindings({
 
       // Iterates packages in the workload and creates
       // Workload -> Package relationships.
-      await apiClient.iteratePackages(async (csw_package) => {
+      await apiClient.iteratePackages(workload.uuid, async (csw_package) => {
         const package_key = createHash('sha256')
           .update(JSON.stringify(csw_package))
           .digest('hex');
@@ -70,44 +70,47 @@ export async function fetchPackagesWorkloadFindings({
         }
 
         packageKeys[key].add(packageEntity._key);
-      }, workload.uuid);
+      });
 
       // Iterates findings in the workload and creates relationships
       // between Workloads, Packages, and Workload Findings.
-      await apiClient.iterateWorkloadFindings(async (workloadFinding) => {
-        const workloadFindingEntity = await jobState.addEntity(
-          createWorkloadFindingEntity(workloadFinding, workload.uuid),
-        );
+      await apiClient.iterateWorkloadFindings(
+        workload.uuid,
+        async (workloadFinding) => {
+          const workloadFindingEntity = await jobState.addEntity(
+            createWorkloadFindingEntity(workloadFinding, workload.uuid),
+          );
 
-        await jobState.addRelationship(
-          createWorkloadFindingRelationship(
-            workloadEntity,
-            workloadFindingEntity,
-          ),
-        );
+          await jobState.addRelationship(
+            createWorkloadFindingRelationship(
+              workloadEntity,
+              workloadFindingEntity,
+            ),
+          );
 
-        // Iterates over each package the finding relates to.
-        for (const package_info of workloadFinding.package_infos || []) {
-          // Iterates over each package used by this workload
-          // with the matching name and version.
-          for (const package_key of packageKeys[
-            `${package_info.name}:${package_info.version}`
-          ]) {
-            const package_entity = await jobState.findEntity(package_key);
+          // Iterates over each package the finding relates to.
+          for (const package_info of workloadFinding.package_infos || []) {
+            // Iterates over each package used by this workload
+            // with the matching name and version.
+            for (const package_key of packageKeys[
+              `${package_info.name}:${package_info.version}`
+            ]) {
+              const package_entity = await jobState.findEntity(package_key);
 
-            if (!package_entity) {
-              continue;
+              if (!package_entity) {
+                continue;
+              }
+
+              await jobState.addRelationship(
+                createPackageWorkloadFindingRelationship(
+                  package_entity,
+                  workloadFindingEntity,
+                ),
+              );
             }
-
-            await jobState.addRelationship(
-              createPackageWorkloadFindingRelationship(
-                package_entity,
-                workloadFindingEntity,
-              ),
-            );
           }
-        }
-      }, workload.uuid);
+        },
+      );
     },
   );
 }

@@ -52,7 +52,7 @@ export function createWorkloadFindingEntity(
           workload_finding.v2_severity ||
           'UNKNOWN',
         numericSeverity:
-          workload_finding.v3_score || workload_finding.v2_score || -1,
+          workload_finding.v3_score || workload_finding.v2_score || 0,
         open: true,
         category: 'vulnerability',
         cveID: workload_finding.cve_id,
