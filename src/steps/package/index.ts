@@ -18,7 +18,7 @@ import {
 
 import { createHash } from 'crypto';
 
-export async function fetchPackagesWorkloadFindings({
+export async function fetchPackages({
   instance,
   jobState,
   logger,
@@ -43,7 +43,7 @@ export async function fetchPackagesWorkloadFindings({
        * Key format: name:version
        * Value format: Set<string>
        */
-      const packageKeys = {};
+      const packageKeys = new Map<string, Set<string>>();
 
       // Iterates packages in the workload and creates
       // Workload -> Package relationships.
@@ -65,12 +65,41 @@ export async function fetchPackagesWorkloadFindings({
         // Adds the packageEntity's key to the packageKey object's set
         const key = `${csw_package.name}:${csw_package.version}`;
 
-        if (!packageKeys[key]) {
-          packageKeys[key] = new Set<string>();
+        if (!packageKeys.has(key)) {
+          packageKeys.set(key, new Set<string>());
         }
 
-        packageKeys[key].add(packageEntity._key);
+        packageKeys.get(key)!.add(packageEntity._key);
       });
+
+      await jobState.setData(workload.uuid, packageKeys);
+    },
+  );
+}
+
+export async function fetchWorkloadFindings({
+  instance,
+  jobState,
+  logger,
+}: IntegrationStepExecutionContext<IntegrationConfig>) {
+  const apiClient = createAPIClient(instance.config);
+  await jobState.iterateEntities(
+    { _type: Entities.WORKLOAD._type },
+    async (workloadEntity) => {
+      const workload = getRawData<SecureWorkloadProject>(workloadEntity);
+
+      if (!workload) {
+        logger.warn(
+          { _key: workloadEntity._key },
+          'Could not get raw data for workload entity',
+        );
+        return;
+      }
+
+      const packageKeys = (await jobState.getData(workload.uuid)) as Map<
+        string,
+        Set<string>
+      >;
 
       // Iterates findings in the workload and creates relationships
       // between Workloads, Packages, and Workload Findings.
@@ -92,9 +121,9 @@ export async function fetchPackagesWorkloadFindings({
           for (const package_info of workloadFinding.package_infos || []) {
             // Iterates over each package used by this workload
             // with the matching name and version.
-            for (const package_key of packageKeys[
-              `${package_info.name}:${package_info.version}`
-            ]) {
+            for (const package_key of packageKeys.get(
+              `${package_info.name}:${package_info.version}`,
+            ) || []) {
               const package_entity = await jobState.findEntity(package_key);
 
               if (!package_entity) {
@@ -117,15 +146,22 @@ export async function fetchPackagesWorkloadFindings({
 
 export const packageSteps: IntegrationStep<IntegrationConfig>[] = [
   {
-    id: Steps.PACKAGES_WORKLOAD_FINDINGS,
-    name: 'Fetch Packages And Workload Findings',
-    entities: [Entities.PACKAGE, Entities.WORKLOAD_FINDING],
+    id: Steps.PACKAGES,
+    name: 'Fetch Packages',
+    entities: [Entities.PACKAGE],
+    relationships: [Relationships.WORKLOAD_HAS_PACKAGE],
+    dependsOn: [Steps.WORKLOADS],
+    executionHandler: fetchPackages,
+  },
+  {
+    id: Steps.WORKLOAD_FINDINGS,
+    name: 'Fetch Workload Findings',
+    entities: [Entities.WORKLOAD_FINDING],
     relationships: [
-      Relationships.WORKLOAD_HAS_PACKAGE,
       Relationships.WORKLOAD_HAS_WORKLOAD_FINDING,
       Relationships.PACKAGE_HAS_WORKLOAD_FINDING,
     ],
-    dependsOn: [Steps.WORKLOADS],
-    executionHandler: fetchPackagesWorkloadFindings,
+    dependsOn: [Steps.WORKLOADS, Steps.PACKAGES],
+    executionHandler: fetchWorkloadFindings,
   },
 ];

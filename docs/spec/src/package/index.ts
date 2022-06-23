@@ -7,8 +7,8 @@ export const packageSpec: StepSpec<IntegrationConfig>[] = [
      * ENDPOINT: [https://localhost/api/v1/workload/{uuid}/packages]
      * PATTERN: Fetch Entities
      */
-    id: 'fetch-packages-workload-findings',
-    name: 'Fetch Packages And Workload Findings',
+    id: 'fetch-packages',
+    name: 'Fetch Packages',
     entities: [
       {
         resourceName: 'Package',
@@ -23,6 +23,26 @@ export const packageSpec: StepSpec<IntegrationConfig>[] = [
           },
         },
       },
+    ],
+    relationships: [
+      {
+        _type: 'csw_project_has_package',
+        sourceType: 'csw_project',
+        _class: RelationshipClass.HAS,
+        targetType: 'csw_package',
+      },
+    ],
+    dependsOn: ['fetch-workloads'],
+    implemented: true,
+  },
+  {
+    /**
+     * ENDPOINT: [https://localhost/api/v1/workload/{uuid}/vulnerabilities]
+     * PATTERN: Fetch Entities
+     */
+    id: 'fetch-workload-findings',
+    name: 'Fetch Workload Findings',
+    entities: [
       {
         resourceName: 'Workload Vulnerability',
         _type: 'csw_workload_finding',
@@ -54,12 +74,6 @@ export const packageSpec: StepSpec<IntegrationConfig>[] = [
     ],
     relationships: [
       {
-        _type: 'csw_project_has_package',
-        sourceType: 'csw_project',
-        _class: RelationshipClass.HAS,
-        targetType: 'csw_package',
-      },
-      {
         _type: 'csw_project_has_workload_finding',
         sourceType: 'csw_project',
         _class: RelationshipClass.HAS,
@@ -72,7 +86,7 @@ export const packageSpec: StepSpec<IntegrationConfig>[] = [
         targetType: 'csw_workload_finding',
       },
     ],
-    dependsOn: ['fetch-workloads'],
+    dependsOn: ['fetch-workloads', 'fetch-packages'],
     implemented: true,
   },
 ];

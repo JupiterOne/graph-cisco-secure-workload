@@ -12,7 +12,8 @@ export const Steps = {
   USER_SCOPE_RELATIONSHIPS: 'build-user-scope-relationships',
   WORKLOADS: 'fetch-workloads',
   INTERFACE_SCOPE_RELATIONSHIPS: 'build-interface-scope-relationships',
-  PACKAGES_WORKLOAD_FINDINGS: 'fetch-packages-workload-findings',
+  PACKAGES: 'fetch-packages',
+  WORKLOAD_FINDINGS: 'fetch-workload-findings',
 };
 
 export const Entities: Record<
