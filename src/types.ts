@@ -48,6 +48,41 @@ export interface SecureWorkloadNetworkFinding {
   ip: string;
   cve_ids?: string[];
 }
+export interface SecureWorkloadPackage {
+  architecture?: string;
+  name?: string;
+  publisher?: string;
+  version?: string;
+}
+
+export interface PackageInfo {
+  name: string;
+  version: string;
+}
+
+export interface SecureWorkloadProjectFinding {
+  cve_id: string;
+  package_infos?: PackageInfo[];
+  v2_score?: number;
+  v2_access_complexity?: string;
+  v2_access_vector?: string;
+  v2_authentication?: string;
+  v2_availability_impact?: string;
+  v2_confidentiality_impact?: string;
+  v2_integrity_impact?: string;
+  v2_severity?: string;
+  v3_score?: number;
+  v3_attack_complexity?: string;
+  v3_attack_vector?: string;
+  v3_availability_impact?: string;
+  v3_base_severity?: string;
+  v3_confidentiality_impact?: string;
+  v3_integrity_impact?: string;
+  v3_privileges_required?: string;
+  v3_scope?: string;
+  v3_user_interaction?: string;
+}
+
 // Those can be useful to a degree, but often they're just full of optional
 // values. Understanding the response data may be more reliably accomplished by
 // reviewing the API response recordings produced by testing the wrapper client

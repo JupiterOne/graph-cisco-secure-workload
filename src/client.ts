@@ -9,7 +9,9 @@ import {
 import { IntegrationConfig } from './config';
 import {
   SecureWorkloadNetworkFinding,
+  SecureWorkloadPackage,
   SecureWorkloadProject,
+  SecureWorkloadProjectFinding,
   SecureWorkloadScope,
   SecureWorkloadUser,
 } from './types';
@@ -178,6 +180,37 @@ export class APIClient {
     return (await response.json()) as SecureWorkloadProject;
   }
 
+  public async fetchPackages(uuid: string): Promise<SecureWorkloadPackage[]> {
+    const headers = this.generateHeaders(
+      'GET',
+      `/openapi/v1/workload/${uuid}/packages`,
+    );
+    const URI = this.config.apiURI + `/openapi/v1/workload/${uuid}/packages`;
+    const response: Response = await fetch(URI, { headers: headers });
+
+    if (!response.ok) {
+      this.handleApiError(response, URI);
+    }
+    return (await response.json()) as SecureWorkloadPackage[];
+  }
+
+  public async fetchWorkloadFindings(
+    uuid: string,
+  ): Promise<SecureWorkloadProjectFinding[]> {
+    const headers = this.generateHeaders(
+      'GET',
+      `/openapi/v1/workload/${uuid}/vulnerabilities`,
+    );
+    const URI =
+      this.config.apiURI + `/openapi/v1/workload/${uuid}/vulnerabilities`;
+    const response: Response = await fetch(URI, { headers: headers });
+
+    if (!response.ok) {
+      this.handleApiError(response, URI);
+    }
+    return (await response.json()) as SecureWorkloadProjectFinding[];
+  }
+
   private handleApiError(err: any, endpoint: string): void {
     if (err.status === 401) {
       throw new IntegrationProviderAuthenticationError({
@@ -232,6 +265,9 @@ export class APIClient {
 
   /**
    * Iterates each inventory resource in the provider.
+   *
+   * Collects the set of all workload UUIDs in the inventory. Then calls the
+   * workload endpoint to get the workload objects.
    *
    * @param iteratee receives each resource to produce entities/relationships
    */
@@ -294,6 +330,40 @@ export class APIClient {
 
     for (const network of networks) {
       await iteratee(network);
+    }
+  }
+  /*
+   * Iterates each package resource in the provider.
+   *
+   * @param iteratee receives each resource to produce entities/relationships
+   */
+  public async iteratePackages(
+    workloadUUID: string,
+    iteratee: ResourceIteratee<SecureWorkloadPackage>,
+  ): Promise<void> {
+    const scopes: SecureWorkloadPackage[] = await this.fetchPackages(
+      workloadUUID,
+    );
+
+    for (const scope of scopes) {
+      await iteratee(scope);
+    }
+  }
+
+  /**
+   * Iterates each workload vulnerabilty resource in the provider.
+   *
+   * @param iteratee receives each resource to produce entities/relationships
+   */
+  public async iterateWorkloadFindings(
+    workloadUUID: string,
+    iteratee: ResourceIteratee<SecureWorkloadProjectFinding>,
+  ): Promise<void> {
+    const scopes: SecureWorkloadProjectFinding[] =
+      await this.fetchWorkloadFindings(workloadUUID);
+
+    for (const scope of scopes) {
+      await iteratee(scope);
     }
   }
 }

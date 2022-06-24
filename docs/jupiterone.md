@@ -77,29 +77,34 @@ https://github.com/JupiterOne/sdk/blob/main/docs/integrations/development.md
 
 The following entities are created:
 
-| Resources             | Entity `_type`        | Entity `_class` |
-| --------------------- | --------------------- | --------------- |
-| Account               | `csw_account`         | `Account`       |
-| Interface             | `csw_interface`       | `Application`   |
-| Network               | `csw_network`         | `Host`          |
-| Network Vulnerability | `csw_network_finding` | `Finding`       |
-| Scope                 | `csw_scope`           | `Group`         |
-| User                  | `csw_user`            | `User`          |
-| Workload              | `csw_project`         | `Project`       |
+| Resources              | Entity `_type`         | Entity `_class` |
+| ---------------------- | ---------------------- | --------------- |
+| Account                | `csw_account`          | `Account`       |
+| Interface              | `csw_interface`        | `Application`   |
+| Network                | `csw_network`          | `Host`          |
+| Network Vulnerability  | `csw_network_finding`  | `Finding`       |
+| Package                | `csw_package`          | `CodeModule`    |
+| Scope                  | `csw_scope`            | `Group`         |
+| User                   | `csw_user`             | `User`          |
+| Workload               | `csw_project`          | `Project`       |
+| Workload Vulnerability | `csw_workload_finding` | `Finding`       |
 
 ### Relationships
 
 The following relationships are created:
 
-| Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
-| --------------------- | --------------------- | --------------------- |
-| `csw_account`         | **HAS**               | `csw_user`            |
-| `csw_interface`       | **HAS**               | `csw_scope`           |
-| `csw_network`         | **HAS**               | `csw_network_finding` |
-| `csw_project`         | **HAS**               | `csw_interface`       |
-| `csw_scope`           | **HAS**               | `csw_network`         |
-| `csw_scope`           | **HAS**               | `csw_scope`           |
-| `csw_user`            | **ASSIGNED**          | `csw_scope`           |
+| Source Entity `_type` | Relationship `_class` | Target Entity `_type`  |
+| --------------------- | --------------------- | ---------------------- |
+| `csw_account`         | **HAS**               | `csw_user`             |
+| `csw_interface`       | **HAS**               | `csw_scope`            |
+| `csw_network`         | **HAS**               | `csw_network_finding`  |
+| `csw_package`         | **HAS**               | `csw_workload_finding` |
+| `csw_project`         | **HAS**               | `csw_interface`        |
+| `csw_project`         | **HAS**               | `csw_package`          |
+| `csw_project`         | **HAS**               | `csw_workload_finding` |
+| `csw_scope`           | **HAS**               | `csw_network`          |
+| `csw_scope`           | **HAS**               | `csw_scope`            |
+| `csw_user`            | **ASSIGNED**          | `csw_scope`            |
 
 <!--
 ********************************************************************************
