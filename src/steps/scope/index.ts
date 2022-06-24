@@ -24,7 +24,7 @@ export async function fetchScopes({
   await apiClient.iterateScopes(async (scope) => {
     // Sets the rootScopeID for use in networks.
     if (!(await jobState.getData('rootScopeID')) && scope.root_app_scope_id) {
-      jobState.setData('rootScopeID', scope.root_app_scope_id);
+      await jobState.setData('rootScopeID', scope.root_app_scope_id);
     }
     await jobState.addEntity(createScopeEntity(scope));
   });
