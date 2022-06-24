@@ -21,6 +21,7 @@ export function createRoleEntity(role: SecureWorkloadRole): Entity {
         displayName: role.name,
         name: role.name,
         description: role.description,
+        id: role.id,
       },
     },
   });
