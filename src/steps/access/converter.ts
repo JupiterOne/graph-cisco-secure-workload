@@ -43,3 +43,14 @@ export function createAccountUserRelationship(
     to: user,
   });
 }
+
+export function createUserRoleRelationship(
+  user: Entity,
+  role: Entity,
+): Relationship {
+  return createDirectRelationship({
+    _class: RelationshipClass.HAS,
+    from: user,
+    to: role,
+  });
+}

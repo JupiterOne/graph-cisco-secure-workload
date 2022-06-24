@@ -27,4 +27,23 @@ export const accessSpec: StepSpec<IntegrationConfig>[] = [
     dependsOn: ['fetch-account'],
     implemented: true,
   },
+  {
+    /**
+     * n/a
+     * PATTERN: Build Child Relationships
+     */
+    id: 'build-user-role-relationships',
+    name: 'Build User -> Role Relationships',
+    entities: [],
+    relationships: [
+      {
+        _type: 'csw_user_has_role',
+        sourceType: 'csw_user',
+        _class: RelationshipClass.HAS,
+        targetType: 'csw_role',
+      },
+    ],
+    dependsOn: ['fetch-users', 'fetch-roles'],
+    implemented: true,
+  },
 ];

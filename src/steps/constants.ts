@@ -7,9 +7,12 @@ import {
 export const Steps = {
   ACCOUNT: 'fetch-account',
   USERS: 'fetch-users',
+  ROLES: 'fetch-roles',
+  USER_ROLE_RELATIONSHIPS: 'build-user-role-relationships',
   SCOPES: 'fetch-scopes',
   SCOPE_RELATIONSHIPS: 'build-scope-relationships',
   USER_SCOPE_RELATIONSHIPS: 'build-user-scope-relationships',
+  ROLE_SCOPE_RELATIONSHIPS: 'build-role-scope-relationships',
   WORKLOADS: 'fetch-workloads',
   INTERFACE_SCOPE_RELATIONSHIPS: 'build-interface-scope-relationships',
   PACKAGES: 'fetch-packages',
@@ -19,6 +22,7 @@ export const Steps = {
 export const Entities: Record<
   | 'ACCOUNT'
   | 'USER'
+  | 'ROLE'
   | 'SCOPE'
   | 'WORKLOAD'
   | 'INTERFACE'
@@ -58,6 +62,20 @@ export const Entities: Record<
         'roleIDs',
         'bypassExternalAuth',
       ],
+    },
+  },
+  ROLE: {
+    resourceName: 'Role',
+    _type: 'csw_role',
+    _class: ['AccessRole'],
+    schema: {
+      properties: {
+        id: { type: 'string' },
+        app_scope_id: { type: 'string' },
+        name: { type: 'string' },
+        description: { type: ['string', 'null'] },
+      },
+      required: ['id'],
     },
   },
   SCOPE: {
@@ -164,8 +182,11 @@ export const Entities: Record<
 
 export const Relationships: Record<
   | 'ACCOUNT_HAS_USER'
+  | 'ACCOUNT_HAS_ROLE'
+  | 'USER_HAS_ROLE'
   | 'SCOPE_HAS_SCOPE'
   | 'USER_ASSIGNED_SCOPE'
+  | 'ROLE_USES_SCOPE'
   | 'INTERFACE_HAS_SCOPE'
   | 'WORKLOAD_HAS_INTERFACE'
   | 'WORKLOAD_HAS_PACKAGE'
@@ -179,6 +200,18 @@ export const Relationships: Record<
     _class: RelationshipClass.HAS,
     targetType: Entities.USER._type,
   },
+  ACCOUNT_HAS_ROLE: {
+    _type: 'csw_account_has_role',
+    sourceType: Entities.ACCOUNT._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.ROLE._type,
+  },
+  USER_HAS_ROLE: {
+    _type: 'csw_user_has_role',
+    sourceType: Entities.USER._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.ROLE._type,
+  },
   SCOPE_HAS_SCOPE: {
     _type: 'csw_scope_has_scope',
     sourceType: Entities.SCOPE._type,
@@ -189,6 +222,12 @@ export const Relationships: Record<
     _type: 'csw_user_assigned_scope',
     sourceType: Entities.USER._type,
     _class: RelationshipClass.ASSIGNED,
+    targetType: Entities.SCOPE._type,
+  },
+  ROLE_USES_SCOPE: {
+    _type: 'csw_role_uses_scope',
+    sourceType: Entities.ROLE._type,
+    _class: RelationshipClass.USES,
     targetType: Entities.SCOPE._type,
   },
   INTERFACE_HAS_SCOPE: {

@@ -11,6 +11,13 @@ export interface SecureWorkloadUser {
   disabled_at?: number;
 }
 
+export interface SecureWorkloadRole {
+  id: string;
+  app_scope_id?: string;
+  name?: string;
+  description?: string;
+}
+
 export interface SecureWorkloadScope {
   id: string;
   short_name?: string;

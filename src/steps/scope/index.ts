@@ -10,6 +10,7 @@ import { IntegrationConfig } from '../../config';
 import { SecureWorkloadScope, SecureWorkloadUser } from '../../types';
 import { Entities, Steps, Relationships } from '../constants';
 import {
+  createRoleScopeRelationship,
   createScopeEntity,
   createScopeRelationship,
   createUserScopeRelationship,
@@ -96,6 +97,42 @@ export async function buildUserScopeRelationships({
   );
 }
 
+export async function buildRoleScopeRelationships({
+  jobState,
+  logger,
+}: IntegrationStepExecutionContext<IntegrationConfig>) {
+  await jobState.iterateEntities(
+    { _type: Entities.ROLE._type },
+    async (roleEntity) => {
+      const role = getRawData<SecureWorkloadUser>(roleEntity);
+
+      if (!role) {
+        logger.warn(
+          { _key: roleEntity._key },
+          'Could not get raw data for role entity',
+        );
+        return;
+      }
+
+      if (!role.app_scope_id) {
+        return;
+      }
+
+      const scopeEntity = await jobState.findEntity(role.app_scope_id);
+
+      if (!scopeEntity) {
+        throw new IntegrationMissingKeyError(
+          `Expected scope with key to exist (key=${role.app_scope_id})`,
+        );
+      }
+
+      await jobState.addRelationship(
+        createRoleScopeRelationship(roleEntity, scopeEntity),
+      );
+    },
+  );
+}
+
 export const scopeSteps: IntegrationStep<IntegrationConfig>[] = [
   {
     id: Steps.SCOPES,
@@ -120,5 +157,13 @@ export const scopeSteps: IntegrationStep<IntegrationConfig>[] = [
     relationships: [Relationships.USER_ASSIGNED_SCOPE],
     dependsOn: [Steps.SCOPES, Steps.USERS],
     executionHandler: buildUserScopeRelationships,
+  },
+  {
+    id: Steps.ROLE_SCOPE_RELATIONSHIPS,
+    name: 'Build Role -> Scope Relationships',
+    entities: [],
+    relationships: [Relationships.ROLE_USES_SCOPE],
+    dependsOn: [Steps.SCOPES, Steps.ROLES],
+    executionHandler: buildRoleScopeRelationships,
   },
 ];

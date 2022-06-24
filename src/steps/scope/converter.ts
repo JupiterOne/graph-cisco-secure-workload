@@ -51,3 +51,14 @@ export function createUserScopeRelationship(
     to: scope,
   });
 }
+
+export function createRoleScopeRelationship(
+  role: Entity,
+  scope: Entity,
+): Relationship {
+  return createDirectRelationship({
+    _class: RelationshipClass.USES,
+    from: role,
+    to: scope,
+  });
+}

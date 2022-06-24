@@ -11,6 +11,7 @@ import {
   SecureWorkloadPackage,
   SecureWorkloadProject,
   SecureWorkloadProjectFinding,
+  SecureWorkloadRole,
   SecureWorkloadScope,
   SecureWorkloadUser,
 } from './types';
@@ -96,6 +97,18 @@ export class APIClient {
     }
 
     return (await response.json()) as SecureWorkloadUser[];
+  }
+
+  public async fetchRoles(): Promise<SecureWorkloadRole[]> {
+    const headers = this.generateHeaders('GET', '/openapi/v1/roles');
+    const URI = this.config.apiURI + '/openapi/v1/roles';
+    const response: Response = await fetch(URI, { headers: headers });
+
+    if (!response.ok) {
+      this.handleApiError(response, URI);
+    }
+
+    return (await response.json()) as SecureWorkloadRole[];
   }
 
   public async fetchScopes(): Promise<SecureWorkloadScope[]> {
@@ -218,6 +231,21 @@ export class APIClient {
 
     for (const user of users) {
       await iteratee(user);
+    }
+  }
+
+  /**
+   * Iterates each role resource in the provider.
+   *
+   * @param iteratee receives each resource to produce entities/relationships
+   */
+  public async iterateRoles(
+    iteratee: ResourceIteratee<SecureWorkloadRole>,
+  ): Promise<void> {
+    const roles: SecureWorkloadRole[] = await this.fetchRoles();
+
+    for (const role of roles) {
+      await iteratee(role);
     }
   }
 
