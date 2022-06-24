@@ -12,10 +12,17 @@ export const Steps = {
   USER_SCOPE_RELATIONSHIPS: 'build-user-scope-relationships',
   WORKLOADS: 'fetch-workloads',
   INTERFACE_SCOPE_RELATIONSHIPS: 'build-interface-scope-relationships',
+  NETWORKS: 'fetch-networks',
 };
 
 export const Entities: Record<
-  'ACCOUNT' | 'USER' | 'SCOPE' | 'WORKLOAD' | 'INTERFACE',
+  | 'ACCOUNT'
+  | 'USER'
+  | 'SCOPE'
+  | 'WORKLOAD'
+  | 'INTERFACE'
+  | 'NETWORK'
+  | 'NETWORK_FINDING',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -110,6 +117,28 @@ export const Entities: Record<
       required: [],
     },
   },
+  NETWORK: {
+    resourceName: 'Network',
+    _type: 'csw_network',
+    _class: ['Host'],
+    schema: {
+      properties: {
+        ip: { type: 'string ' },
+      },
+      required: [],
+    },
+  },
+  NETWORK_FINDING: {
+    resourceName: 'Network Vulnerability',
+    _type: 'csw_network_finding',
+    _class: ['Finding'],
+    schema: {
+      properties: {
+        cve_id: { type: 'string' },
+      },
+      required: [],
+    },
+  },
 };
 
 export const Relationships: Record<
@@ -117,7 +146,10 @@ export const Relationships: Record<
   | 'SCOPE_HAS_SCOPE'
   | 'USER_ASSIGNED_SCOPE'
   | 'INTERFACE_HAS_SCOPE'
-  | 'WORKLOAD_HAS_INTERFACE',
+  | 'WORKLOAD_HAS_INTERFACE'
+  | 'SCOPE_HAS_NETWORK'
+  | 'WORKLOAD_CONNECTS_NETWORK'
+  | 'NETWORK_HAS_NETWORK_FINDING',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -149,5 +181,23 @@ export const Relationships: Record<
     sourceType: Entities.WORKLOAD._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.INTERFACE._type,
+  },
+  SCOPE_HAS_NETWORK: {
+    _type: 'csw_scope_has_network',
+    sourceType: Entities.SCOPE._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.NETWORK._type,
+  },
+  WORKLOAD_CONNECTS_NETWORK: {
+    _type: 'csw_project_connects_network',
+    sourceType: Entities.WORKLOAD._type,
+    _class: RelationshipClass.CONNECTS,
+    targetType: Entities.NETWORK._type,
+  },
+  NETWORK_HAS_NETWORK_FINDING: {
+    _type: 'csw_network_has_network_finding',
+    sourceType: Entities.NETWORK._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.NETWORK_FINDING._type,
   },
 };

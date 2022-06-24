@@ -8,6 +8,7 @@ import {
 
 import { IntegrationConfig } from './config';
 import {
+  SecureWorkloadNetworkFinding,
   SecureWorkloadProject,
   SecureWorkloadScope,
   SecureWorkloadUser,
@@ -110,14 +111,14 @@ export class APIClient {
 
   public async fetchWorkloads(
     offset?: string,
-  ): Promise<{ offset?: string; results: { uuid: string }[] }> {
+  ): Promise<{ offset?: string; results: { uuid: string; ip?: string }[] }> {
     const body = JSON.stringify({
       filter: {
         type: 'eq',
         field: 'resource_type',
         value: 'WORKLOAD',
       },
-      dimensions: ['uuid'],
+      dimensions: ['uuid', 'ip'],
       limit: 100,
       offset: offset,
     });
@@ -138,6 +139,32 @@ export class APIClient {
     }
 
     return await response.json();
+  }
+
+  public async fetchNetworks(
+    rootScopeID: string,
+    ips: string[],
+  ): Promise<SecureWorkloadNetworkFinding[]> {
+    const body = JSON.stringify({ ips });
+    const headers = this.generateHeaders(
+      'POST',
+      '/openapi/v1/inventory/cves/' + rootScopeID,
+      body,
+    );
+    console.log(body);
+    const URI =
+      this.config.apiURI + '/openapi/v1/inventory/cves/' + rootScopeID;
+    const response: Response = await fetch(URI, {
+      method: 'POST',
+      body: body,
+      headers: headers,
+    });
+
+    if (!response.ok) {
+      this.handleApiError(response, URI);
+    }
+
+    return (await response.json()) as SecureWorkloadNetworkFinding[];
   }
 
   public async fetchWorkload(uuid: string): Promise<SecureWorkloadProject> {
@@ -231,6 +258,42 @@ export class APIClient {
 
     for (const uuid of uuids) {
       await iteratee(await this.fetchWorkload(uuid));
+    }
+  }
+
+  /**
+   * Iterates each inventory resource in the provider.
+   *
+   * @param iteratee receives each resource to produce entities/relationships
+   */
+  public async iterateNetworks(
+    rootScopeID: string,
+    iteratee: ResourceIteratee<SecureWorkloadNetworkFinding>,
+  ): Promise<void> {
+    let workloads: {
+      offset?: string;
+      results: {
+        ip?: string;
+      }[];
+    };
+
+    let offset: string | undefined = undefined;
+
+    const ips = new Set<string>();
+
+    do {
+      workloads = await this.fetchWorkloads(offset);
+
+      offset = workloads.offset;
+      workloads.results.forEach(
+        (workload) => workload.ip && ips.add(workload.ip),
+      );
+    } while (workloads.offset);
+
+    const networks = await this.fetchNetworks(rootScopeID, [...ips]);
+
+    for (const network of networks) {
+      await iteratee(network);
     }
   }
 }

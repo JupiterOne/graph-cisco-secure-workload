@@ -19,6 +19,7 @@ export interface SecureWorkloadScope {
   vrf_id?: string;
   parent_app_scope_id?: string;
   child_app_scope_ids?: string[];
+  root_app_scope_id?: string;
 }
 
 export interface SecureWorkloadProject {
@@ -43,6 +44,10 @@ export interface SecureWorkloadInterface {
   tags?: any;
 }
 
+export interface SecureWorkloadNetworkFinding {
+  ip: string;
+  cve_ids?: string[];
+}
 // Those can be useful to a degree, but often they're just full of optional
 // values. Understanding the response data may be more reliably accomplished by
 // reviewing the API response recordings produced by testing the wrapper client
