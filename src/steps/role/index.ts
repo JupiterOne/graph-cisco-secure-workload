@@ -1,5 +1,6 @@
 import {
   Entity,
+  IntegrationMissingKeyError,
   IntegrationStep,
   IntegrationStepExecutionContext,
 } from '@jupiterone/integration-sdk-core';
@@ -17,6 +18,10 @@ export async function fetchRoles({
   const apiClient = createAPIClient(instance.config);
 
   const accountEntity = (await jobState.getData(ACCOUNT_ENTITY_KEY)) as Entity;
+
+  if (!accountEntity) {
+    throw new IntegrationMissingKeyError(`Expected account entity to exist`);
+  }
 
   await apiClient.iterateRoles(async (role) => {
     const roleEntity = await jobState.addEntity(createRoleEntity(role));

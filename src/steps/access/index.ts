@@ -25,6 +25,10 @@ export async function fetchUsers({
 
   const accountEntity = (await jobState.getData(ACCOUNT_ENTITY_KEY)) as Entity;
 
+  if (!accountEntity) {
+    throw new IntegrationMissingKeyError(`Expected account entity to exist`);
+  }
+
   await apiClient.iterateUsers(async (user) => {
     const userEntity = await jobState.addEntity(createUserEntity(user));
     await jobState.addRelationship(
