@@ -294,6 +294,9 @@ export class APIClient {
     } while (workloads.offset);
 
     for (const uuid of uuids) {
+      if (!uuid) {
+        continue;
+      }
       await iteratee(await this.fetchWorkload(uuid));
     }
   }
