@@ -290,7 +290,9 @@ export class APIClient {
       workloads = await this.fetchWorkloads(offset);
 
       offset = workloads.offset;
-      workloads.results.forEach((workload) => uuids.add(workload.uuid));
+      if (workloads.results.length) {
+        workloads.results.forEach((workload) => uuids.add(workload?.uuid));
+      }
     } while (workloads.offset);
 
     for (const uuid of uuids) {
