@@ -9,24 +9,13 @@ afterEach(async () => {
   await recording.stop();
 });
 
-test('fetch-users', async () => {
+test('fetch-roles', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
-    name: 'fetch-users',
+    name: 'fetch-roles',
   });
 
-  const stepConfig = buildStepTestConfigForStep(Steps.USERS);
-  const stepResult = await executeStepWithDependencies(stepConfig);
-  expect(stepResult).toMatchStepMetadata(stepConfig);
-});
-
-test('build-user-role-relationships', async () => {
-  recording = setupProjectRecording({
-    directory: __dirname,
-    name: 'build-user-role-relationships',
-  });
-
-  const stepConfig = buildStepTestConfigForStep(Steps.USER_ROLE_RELATIONSHIPS);
+  const stepConfig = buildStepTestConfigForStep(Steps.ROLES);
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
 });

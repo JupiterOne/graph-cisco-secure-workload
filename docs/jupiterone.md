@@ -82,6 +82,7 @@ The following entities are created:
 | Account                | `csw_account`          | `Account`       |
 | Interface              | `csw_interface`        | `Application`   |
 | Package                | `csw_package`          | `CodeModule`    |
+| Role                   | `csw_role`             | `AccessRole`    |
 | Scope                  | `csw_scope`            | `Group`         |
 | User                   | `csw_user`             | `User`          |
 | Workload               | `csw_project`          | `Project`       |
@@ -93,14 +94,17 @@ The following relationships are created:
 
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type`  |
 | --------------------- | --------------------- | ---------------------- |
+| `csw_account`         | **HAS**               | `csw_role`             |
 | `csw_account`         | **HAS**               | `csw_user`             |
 | `csw_interface`       | **HAS**               | `csw_scope`            |
 | `csw_package`         | **HAS**               | `csw_workload_finding` |
 | `csw_project`         | **HAS**               | `csw_interface`        |
 | `csw_project`         | **HAS**               | `csw_package`          |
 | `csw_project`         | **HAS**               | `csw_workload_finding` |
+| `csw_role`            | **USES**              | `csw_scope`            |
 | `csw_scope`           | **HAS**               | `csw_scope`            |
 | `csw_user`            | **ASSIGNED**          | `csw_scope`            |
+| `csw_user`            | **HAS**               | `csw_role`             |
 
 <!--
 ********************************************************************************

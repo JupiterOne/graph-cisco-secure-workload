@@ -41,3 +41,14 @@ test('build-user-scope-relationships', async () => {
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
 });
+
+test('build-role-scope-relationships', async () => {
+  recording = setupProjectRecording({
+    directory: __dirname,
+    name: 'build-role-scope-relationships',
+  });
+
+  const stepConfig = buildStepTestConfigForStep(Steps.ROLE_SCOPE_RELATIONSHIPS);
+  const stepResult = await executeStepWithDependencies(stepConfig);
+  expect(stepResult).toMatchStepMetadata(stepConfig);
+});

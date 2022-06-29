@@ -58,4 +58,23 @@ export const scopeSpec: StepSpec<IntegrationConfig>[] = [
     dependsOn: ['fetch-scopes', 'fetch-users'],
     implemented: true,
   },
+  {
+    /**
+     * n/a
+     * PATTERN: Build Child Relationships
+     */
+    id: 'build-role-scope-relationships',
+    name: 'Build Role -> Scope Relationships',
+    entities: [],
+    relationships: [
+      {
+        _type: 'csw_role_uses_scope',
+        sourceType: 'csw_role',
+        _class: RelationshipClass.USES,
+        targetType: 'csw_scope',
+      },
+    ],
+    dependsOn: ['fetch-scopes', 'fetch-roles'],
+    implemented: true,
+  },
 ];
