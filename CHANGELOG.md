@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.1.1] - 2022-06-30
+
+### Fixed
+
+- Fixed ingesting workloads with a null uuid.
+- Fixed ingesting the same workload finding relationship multiple times.
+
 ## [1.1.0] - 2022-06-28
 
 ### Added
