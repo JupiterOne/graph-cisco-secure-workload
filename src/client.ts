@@ -1,4 +1,4 @@
-import fetch, { Response } from 'node-fetch';
+import fetch, { RequestInfo, RequestInit, Response } from 'node-fetch';
 
 import {
   IntegrationProviderAPIError,
@@ -30,6 +30,50 @@ export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
  */
 export class APIClient {
   constructor(readonly config: IntegrationConfig) {}
+
+  private readonly REQUEST_CONFIG = {
+    RETRY_METHODS: ['GET', 'PUT', 'DELETE'],
+    MAX_RETRIES: 3,
+    RETRY_HTTP_CODES: [429, 502, 503, 504],
+    SLEEP_BETWEEN_RETRIES: 2,
+  };
+
+  private async request(
+    url: RequestInfo,
+    init?: RequestInit,
+  ): Promise<Response> {
+    // If there is no init or init.method then this is a GET request.
+    const retry =
+      !init ||
+      !init.method ||
+      this.REQUEST_CONFIG.RETRY_METHODS.includes(init.method);
+    const retryCount = retry ? Math.max(this.REQUEST_CONFIG.MAX_RETRIES, 1) : 1;
+    let response: Response;
+    for (let i = 0; i < retryCount; i++) {
+      try {
+        response = await fetch(url, init);
+      } catch (error) {
+        if (i === retryCount - 1) {
+          throw error;
+        }
+        // Sleep for designated time
+        await new Promise((resolve) =>
+          setTimeout(resolve, this.REQUEST_CONFIG.SLEEP_BETWEEN_RETRIES * 1000),
+        );
+        continue;
+      }
+      if (
+        !this.REQUEST_CONFIG.RETRY_HTTP_CODES.includes(response.status) ||
+        i === retryCount - 1
+      ) {
+        return response;
+      }
+      await new Promise((resolve) =>
+        setTimeout(resolve, this.REQUEST_CONFIG.SLEEP_BETWEEN_RETRIES * 1000),
+      );
+    }
+    return response!;
+  }
 
   /**
    * Generates auth token.
@@ -90,7 +134,7 @@ export class APIClient {
   public async fetchUsers(): Promise<SecureWorkloadUser[]> {
     const headers = this.generateHeaders('GET', '/openapi/v1/users');
     const URI = this.config.apiURI + '/openapi/v1/users';
-    const response: Response = await fetch(URI, { headers: headers });
+    const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
       this.handleApiError(response, URI);
@@ -102,7 +146,7 @@ export class APIClient {
   public async fetchRoles(): Promise<SecureWorkloadRole[]> {
     const headers = this.generateHeaders('GET', '/openapi/v1/roles');
     const URI = this.config.apiURI + '/openapi/v1/roles';
-    const response: Response = await fetch(URI, { headers: headers });
+    const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
       this.handleApiError(response, URI);
@@ -114,7 +158,7 @@ export class APIClient {
   public async fetchScopes(): Promise<SecureWorkloadScope[]> {
     const headers = this.generateHeaders('GET', '/openapi/v1/app_scopes');
     const URI = this.config.apiURI + '/openapi/v1/app_scopes';
-    const response: Response = await fetch(URI, { headers: headers });
+    const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
       this.handleApiError(response, URI);
@@ -142,7 +186,7 @@ export class APIClient {
       body,
     );
     const URI = this.config.apiURI + '/openapi/v1/inventory/search';
-    const response: Response = await fetch(URI, {
+    const response: Response = await this.request(URI, {
       method: 'POST',
       body: body,
       headers: headers,
@@ -158,7 +202,7 @@ export class APIClient {
   public async fetchWorkload(uuid: string): Promise<SecureWorkloadProject> {
     const headers = this.generateHeaders('GET', `/openapi/v1/workload/${uuid}`);
     const URI = this.config.apiURI + `/openapi/v1/workload/${uuid}`;
-    const response: Response = await fetch(URI, { headers: headers });
+    const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
       this.handleApiError(response, URI);
@@ -172,7 +216,7 @@ export class APIClient {
       `/openapi/v1/workload/${uuid}/packages`,
     );
     const URI = this.config.apiURI + `/openapi/v1/workload/${uuid}/packages`;
-    const response: Response = await fetch(URI, { headers: headers });
+    const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
       this.handleApiError(response, URI);
@@ -189,7 +233,7 @@ export class APIClient {
     );
     const URI =
       this.config.apiURI + `/openapi/v1/workload/${uuid}/vulnerabilities`;
-    const response: Response = await fetch(URI, { headers: headers });
+    const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
       this.handleApiError(response, URI);
