@@ -41,9 +41,10 @@ export class APIClient {
   private async request(
     url: RequestInfo,
     init?: RequestInit,
+    retry?: boolean,
   ): Promise<Response> {
     // If there is no init or init.method then this is a GET request.
-    const retry =
+    retry ??=
       !init ||
       !init.method ||
       this.REQUEST_CONFIG.RETRY_METHODS.includes(init.method);
@@ -186,11 +187,15 @@ export class APIClient {
       body,
     );
     const URI = this.config.apiURI + '/openapi/v1/inventory/search';
-    const response: Response = await this.request(URI, {
-      method: 'POST',
-      body: body,
-      headers: headers,
-    });
+    const response: Response = await this.request(
+      URI,
+      {
+        method: 'POST',
+        body: body,
+        headers: headers,
+      },
+      true,
+    );
 
     if (!response.ok) {
       this.handleApiError(response, URI);
