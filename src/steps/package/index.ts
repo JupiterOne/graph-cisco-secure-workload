@@ -121,7 +121,7 @@ export async function fetchWorkloadFindings({
           for (const package_info of workloadFinding.package_infos || []) {
             // Iterates over each package used by this workload
             // with the matching name and version.
-            for (const package_key of packageKeys.get(
+            for (const package_key of packageKeys?.get(
               `${package_info.name}:${package_info.version}`,
             ) || []) {
               const package_entity = await jobState.findEntity(package_key);
