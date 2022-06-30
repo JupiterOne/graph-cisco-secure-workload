@@ -6,7 +6,7 @@ import {
 
 import { createAPIClient } from '../../client';
 import { IntegrationConfig } from '../../config';
-import { SecureWorkloadProject } from '../../types';
+import { PackageInfo, SecureWorkloadProject } from '../../types';
 import { Entities, Relationships, Steps } from '../constants';
 import {
   createPackageEntity,
@@ -117,8 +117,12 @@ export async function fetchWorkloadFindings({
             ),
           );
 
+          const packageInfoSet = new Set<PackageInfo>(
+            workloadFinding.package_infos,
+          );
+
           // Iterates over each package the finding relates to.
-          for (const package_info of workloadFinding.package_infos || []) {
+          for (const package_info of packageInfoSet) {
             // Iterates over each package used by this workload
             // with the matching name and version.
             for (const package_key of packageKeys?.get(
