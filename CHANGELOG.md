@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.1.2] - 2022-07-01
+
+### Added
+
+- Added retries to client requests.
+
 ## [1.1.1] - 2022-06-30
 
 ### Fixed
