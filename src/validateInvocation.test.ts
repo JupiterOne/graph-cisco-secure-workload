@@ -6,6 +6,12 @@ import { integrationConfig } from '../test/config';
 import { setupProjectRecording } from '../test/recording';
 import { IntegrationConfig, validateInvocation } from './config';
 
+function generateURI(route: string) {
+  return integrationConfig.apiURI.endsWith('/')
+    ? integrationConfig.apiURI + route
+    : integrationConfig.apiURI + '/' + route;
+}
+
 describe('#validateInvocation', () => {
   let recording: Recording;
 
@@ -74,7 +80,9 @@ describe('#validateInvocation', () => {
         // tests validate that invalid configurations throw an error
         // with an appropriate and expected message.
         await expect(validateInvocation(executionContext)).rejects.toThrow(
-          `Provider authentication failed at ${integrationConfig.apiURI}/openapi/v1/users: 401 Unauthorized`,
+          `Provider authentication failed at ${generateURI(
+            'openapi/v1/users',
+          )}: 401 Unauthorized`,
         );
       });
 
@@ -96,7 +104,9 @@ describe('#validateInvocation', () => {
         });
 
         await expect(validateInvocation(executionContext)).rejects.toThrow(
-          `Provider authorization failed at ${integrationConfig.apiURI}/openapi/v1/users: 403 Forbidden`,
+          `Provider authorization failed at ${generateURI(
+            'openapi/v1/users',
+          )}: 403 Forbidden`,
         );
       });
     });
