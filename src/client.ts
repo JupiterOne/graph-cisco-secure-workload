@@ -132,9 +132,15 @@ export class APIClient {
     return headers;
   }
 
+  private generateURI(route: string) {
+    return this.config.apiURI.endsWith('/')
+      ? this.config.apiURI + route
+      : this.config.apiURI + '/' + route;
+  }
+
   public async fetchUsers(): Promise<SecureWorkloadUser[]> {
     const headers = this.generateHeaders('GET', '/openapi/v1/users');
-    const URI = this.config.apiURI + '/openapi/v1/users';
+    const URI = this.generateURI('openapi/v1/users');
     const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
@@ -146,7 +152,7 @@ export class APIClient {
 
   public async fetchRoles(): Promise<SecureWorkloadRole[]> {
     const headers = this.generateHeaders('GET', '/openapi/v1/roles');
-    const URI = this.config.apiURI + '/openapi/v1/roles';
+    const URI = this.generateURI('openapi/v1/roles');
     const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
@@ -158,7 +164,7 @@ export class APIClient {
 
   public async fetchScopes(): Promise<SecureWorkloadScope[]> {
     const headers = this.generateHeaders('GET', '/openapi/v1/app_scopes');
-    const URI = this.config.apiURI + '/openapi/v1/app_scopes';
+    const URI = this.generateURI('openapi/v1/app_scopes');
     const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
@@ -186,7 +192,7 @@ export class APIClient {
       '/openapi/v1/inventory/search',
       body,
     );
-    const URI = this.config.apiURI + '/openapi/v1/inventory/search';
+    const URI = this.generateURI('openapi/v1/inventory/search');
     const response: Response = await this.request(
       URI,
       {
@@ -206,7 +212,7 @@ export class APIClient {
 
   public async fetchWorkload(uuid: string): Promise<SecureWorkloadProject> {
     const headers = this.generateHeaders('GET', `/openapi/v1/workload/${uuid}`);
-    const URI = this.config.apiURI + `/openapi/v1/workload/${uuid}`;
+    const URI = this.generateURI(`openapi/v1/workload/${uuid}`);
     const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
@@ -220,7 +226,7 @@ export class APIClient {
       'GET',
       `/openapi/v1/workload/${uuid}/packages`,
     );
-    const URI = this.config.apiURI + `/openapi/v1/workload/${uuid}/packages`;
+    const URI = this.generateURI(`openapi/v1/workload/${uuid}/packages`);
     const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
@@ -236,8 +242,7 @@ export class APIClient {
       'GET',
       `/openapi/v1/workload/${uuid}/vulnerabilities`,
     );
-    const URI =
-      this.config.apiURI + `/openapi/v1/workload/${uuid}/vulnerabilities`;
+    const URI = this.generateURI(`openapi/v1/workload/${uuid}/vulnerabilities`);
     const response: Response = await this.request(URI, { headers: headers });
 
     if (!response.ok) {
