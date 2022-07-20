@@ -33,9 +33,8 @@ export class APIClient {
 
   private readonly REQUEST_CONFIG = {
     RETRY_METHODS: ['GET', 'PUT', 'DELETE'],
-    MAX_RETRIES: 3,
+    MAX_RETRIES: 5,
     RETRY_HTTP_CODES: [429, 502, 503, 504],
-    SLEEP_BETWEEN_RETRIES: 2,
   };
 
   private async request(
@@ -50,16 +49,16 @@ export class APIClient {
       this.REQUEST_CONFIG.RETRY_METHODS.includes(init.method);
     const retryCount = retry ? Math.max(this.REQUEST_CONFIG.MAX_RETRIES, 1) : 1;
     let response: Response;
-    for (let i = 0; i < retryCount; i++) {
+    for (let i = 1; i <= retryCount; i++) {
       try {
         response = await fetch(url, init);
       } catch (error) {
         if (i === retryCount - 1) {
           throw error;
         }
-        // Sleep for designated time
+        // Sleep for 2, 4, 8, 16, or 32 seconds depending on retry number
         await new Promise((resolve) =>
-          setTimeout(resolve, this.REQUEST_CONFIG.SLEEP_BETWEEN_RETRIES * 1000),
+          setTimeout(resolve, Math.pow(2, i) * 1000),
         );
         continue;
       }
@@ -70,7 +69,7 @@ export class APIClient {
         return response;
       }
       await new Promise((resolve) =>
-        setTimeout(resolve, this.REQUEST_CONFIG.SLEEP_BETWEEN_RETRIES * 1000),
+        setTimeout(resolve, Math.pow(2, i) * 1000),
       );
     }
     return response!;
