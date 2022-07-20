@@ -60,8 +60,8 @@ export async function buildUserRoleRelationships({
 
         if (!roleEntity) {
           logger.publishWarnEvent({
-            name: IntegrationWarnEventName.MissingPermission,
-            description: `User (id=${user.id}) has role_id which does not exist. Make sure role with id ${roleID} exists or remove the role from the user.`,
+            name: IntegrationWarnEventName.MissingEntity,
+            description: `Skipped adding role to user. User with id ${user.id} has role_id which does not exist. Make sure role with id ${roleID} exists or remove the role from the user.`,
           });
           continue;
         }
