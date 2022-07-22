@@ -4,6 +4,7 @@ import {
   IntegrationMissingKeyError,
   IntegrationStep,
   IntegrationStepExecutionContext,
+  IntegrationWarnEventName,
 } from '@jupiterone/integration-sdk-core';
 
 import { createAPIClient } from '../../client';
@@ -58,9 +59,11 @@ export async function buildUserRoleRelationships({
         const roleEntity = await jobState.findEntity(roleID);
 
         if (!roleEntity) {
-          throw new IntegrationMissingKeyError(
-            `Expected role with key to exist (key=${roleID})`,
-          );
+          logger.publishWarnEvent({
+            name: IntegrationWarnEventName.MissingEntity,
+            description: `Skipped adding role to user. User with id ${user.id} has role_id which does not exist. Make sure role with id ${roleID} exists or remove the role from the user.`,
+          });
+          continue;
         }
 
         await jobState.addRelationship(
