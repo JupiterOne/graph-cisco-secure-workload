@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.1.3] - 2022-07-22
+
+### Changed
+
+- Updated number of retries from 3 -> 5.
+- Increased time between each retry.
+- Fixed error when user has non-existant role. Sends warn event when occuring.
+
 ## [1.1.2] - 2022-07-01
 
 ### Added
