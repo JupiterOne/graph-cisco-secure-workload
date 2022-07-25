@@ -49,11 +49,11 @@ export class APIClient {
       this.REQUEST_CONFIG.RETRY_METHODS.includes(init.method);
     const retryCount = retry ? Math.max(this.REQUEST_CONFIG.MAX_RETRIES, 1) : 1;
     let response: Response;
-    for (let i = 1; i <= retryCount; i++) {
+    for (let i = 1; i <= retryCount + 1; i++) {
       try {
         response = await fetch(url, init);
       } catch (error) {
-        if (i === retryCount - 1) {
+        if (i === retryCount + 1) {
           throw error;
         }
         // Sleep for 2, 4, 8, 16, or 32 seconds depending on retry number
@@ -64,7 +64,7 @@ export class APIClient {
       }
       if (
         !this.REQUEST_CONFIG.RETRY_HTTP_CODES.includes(response.status) ||
-        i === retryCount - 1
+        i === retryCount + 1
       ) {
         return response;
       }
