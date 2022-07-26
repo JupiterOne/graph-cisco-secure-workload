@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.1.4] - 2022-07-26
+
+### Changed
+
+- Fixed number of retries only running 3 times.
+
 ## [1.1.3] - 2022-07-22
 
 ### Changed
