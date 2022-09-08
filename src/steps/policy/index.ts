@@ -35,36 +35,6 @@ export async function fetchPolicies({
     await jobState.addRelationship(
       createAccountPolicyRelationship(accountEntity, policyEntity),
     );
-
-    if (policy.consumer_filter_id) {
-      const scopeEntity = await jobState.findEntity(policy.consumer_filter_id);
-
-      if (!scopeEntity) {
-        logger.warn(
-          { _key: policy.consumer_filter_id },
-          `Expected scope with key to exist (key=${policy.consumer_filter_id})`,
-        );
-      } else {
-        await jobState.addRelationship(
-          createPolicyScopeRelationship(policyEntity, scopeEntity),
-        );
-      }
-    }
-
-    if (policy.provider_filter_id) {
-      const scopeEntity = await jobState.findEntity(policy.provider_filter_id);
-
-      if (!scopeEntity) {
-        logger.warn(
-          { _key: policy.provider_filter_id },
-          `Expected scope with key to exist (key=${policy.provider_filter_id})`,
-        );
-      } else {
-        await jobState.addRelationship(
-          createPolicyScopeRelationship(policyEntity, scopeEntity),
-        );
-      }
-    }
   });
 }
 
