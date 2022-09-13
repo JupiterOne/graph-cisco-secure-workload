@@ -13,10 +13,12 @@ export const Steps = {
   SCOPE_RELATIONSHIPS: 'build-scope-relationships',
   USER_SCOPE_RELATIONSHIPS: 'build-user-scope-relationships',
   ROLE_SCOPE_RELATIONSHIPS: 'build-role-scope-relationships',
+  POLICY_SCOPE_RELATIONSHIPS: 'build-policy-scope-relationships',
   WORKLOADS: 'fetch-workloads',
   INTERFACE_SCOPE_RELATIONSHIPS: 'build-interface-scope-relationships',
   PACKAGES: 'fetch-packages',
   WORKLOAD_FINDINGS: 'fetch-workload-findings',
+  POLICIES: 'fetch-policies',
 };
 
 export const Entities: Record<
@@ -27,7 +29,8 @@ export const Entities: Record<
   | 'WORKLOAD'
   | 'INTERFACE'
   | 'PACKAGE'
-  | 'WORKLOAD_FINDING',
+  | 'WORKLOAD_FINDING'
+  | 'POLICY',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -178,11 +181,25 @@ export const Entities: Record<
       },
     },
   },
+  POLICY: {
+    resourceName: 'Policy',
+    _type: 'csw_policy',
+    _class: ['ControlPolicy'],
+    schema: {
+      properties: {
+        action: { type: 'string' },
+        consumer: { type: 'string' },
+        provider: { type: 'string' },
+        ports: { type: 'array', items: { type: 'string' } },
+      },
+    },
+  },
 };
 
 export const Relationships: Record<
   | 'ACCOUNT_HAS_USER'
   | 'ACCOUNT_HAS_ROLE'
+  | 'ACCOUNT_HAS_POLICY'
   | 'USER_HAS_ROLE'
   | 'SCOPE_HAS_SCOPE'
   | 'USER_ASSIGNED_SCOPE'
@@ -191,7 +208,8 @@ export const Relationships: Record<
   | 'WORKLOAD_HAS_INTERFACE'
   | 'WORKLOAD_HAS_PACKAGE'
   | 'WORKLOAD_HAS_WORKLOAD_FINDING'
-  | 'PACKAGE_HAS_WORKLOAD_FINDING',
+  | 'PACKAGE_HAS_WORKLOAD_FINDING'
+  | 'POLICY_HAS_SCOPE',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -205,6 +223,12 @@ export const Relationships: Record<
     sourceType: Entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.ROLE._type,
+  },
+  ACCOUNT_HAS_POLICY: {
+    _type: 'csw_account_has_policy',
+    sourceType: Entities.ACCOUNT._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.POLICY._type,
   },
   USER_HAS_ROLE: {
     _type: 'csw_user_has_role',
@@ -259,5 +283,11 @@ export const Relationships: Record<
     sourceType: Entities.PACKAGE._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.WORKLOAD_FINDING._type,
+  },
+  POLICY_HAS_SCOPE: {
+    _type: 'csw_policy_has_scope',
+    sourceType: Entities.POLICY._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.SCOPE._type,
   },
 };

@@ -85,6 +85,52 @@ export interface SecureWorkloadProjectFinding {
   v3_user_interaction?: string;
 }
 
+export interface SecureWorkloadApplication {
+  id: string;
+  name?: string;
+  description?: string;
+  app_scope_id?: string;
+  author?: string;
+  primary?: boolean;
+  alternate_query_mode?: boolean;
+  created_at?: number;
+  latest_adm_version?: number;
+  enforcement_enabled?: boolean;
+  enforced_version?: number;
+}
+
+export interface SecureWorkloadPolicies {
+  absolute_policies?: SecureWorkloadPolicy[];
+  default_policies?: SecureWorkloadPolicy[];
+  catch_all_action?: string;
+}
+
+export interface SecureWorkloadPolicy {
+  id: string;
+  application_id?: string;
+  consumer_filter_id?: string;
+  consumer_filter?: SecureWorkloadFilter;
+  provider_filter_id?: string;
+  provider_filter?: SecureWorkloadFilter;
+  version?: string;
+  rank?: string;
+  action?: string;
+  priority?: number;
+  l4_params?: SecureWorkloadL4Params[];
+}
+
+export interface SecureWorkloadFilter {
+  id?: string;
+  name?: string;
+}
+
+export interface SecureWorkloadL4Params {
+  proto?: number | null;
+  port?: number[];
+  description?: string;
+  approved?: boolean;
+}
+
 // Those can be useful to a degree, but often they're just full of optional
 // values. Understanding the response data may be more reliably accomplished by
 // reviewing the API response recordings produced by testing the wrapper client

@@ -4,6 +4,7 @@ import { IntegrationConfig } from '../../../src/config';
 import { accessSpec } from './access';
 import { accountSpec } from './account';
 import { packageSpec } from './package';
+import { policySpec } from './policy';
 import { roleSpec } from './role';
 import { scopeSpec } from './scope';
 import { workloadSpec } from './workload';
@@ -16,5 +17,6 @@ export const invocationConfig: IntegrationSpecConfig<IntegrationConfig> = {
     ...scopeSpec,
     ...workloadSpec,
     ...packageSpec,
+    ...policySpec,
   ],
 };

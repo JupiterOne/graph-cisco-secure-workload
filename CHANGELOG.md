@@ -8,6 +8,21 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Added new entities:
+
+| Entity     | Name   |
+| ---------- | ------ |
+| csw_policy | Policy |
+
+- Added new relationships:
+
+| Relationship           | From        | Type | To         |
+| ---------------------- | ----------- | ---- | ---------- |
+| csw_account_has_policy | csw_account | HAS  | csw_policy |
+| csw_policy_has_scope   | csw_policy  | HAS  | csw_scope  |
+
 ## [1.1.4] - 2022-07-26
 
 ### Changed

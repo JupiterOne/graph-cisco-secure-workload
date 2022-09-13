@@ -8,7 +8,10 @@ import {
 
 import { IntegrationConfig } from './config';
 import {
+  SecureWorkloadApplication,
   SecureWorkloadPackage,
+  SecureWorkloadPolicies,
+  SecureWorkloadPolicy,
   SecureWorkloadProject,
   SecureWorkloadProjectFinding,
   SecureWorkloadRole,
@@ -173,6 +176,18 @@ export class APIClient {
     return (await response.json()) as SecureWorkloadScope[];
   }
 
+  public async fetchApplications(): Promise<SecureWorkloadApplication[]> {
+    const headers = this.generateHeaders('GET', '/openapi/v1/applications');
+    const URI = this.generateURI('openapi/v1/applications');
+    const response: Response = await this.request(URI, { headers: headers });
+
+    if (!response.ok) {
+      this.handleApiError(response, URI);
+    }
+
+    return (await response.json()) as SecureWorkloadScope[];
+  }
+
   public async fetchWorkloads(
     offset?: string,
   ): Promise<{ offset?: string; results: { uuid: string }[] }> {
@@ -248,6 +263,25 @@ export class APIClient {
       this.handleApiError(response, URI);
     }
     return (await response.json()) as SecureWorkloadProjectFinding[];
+  }
+
+  public async fetchPolicies(
+    applicationId: string,
+  ): Promise<SecureWorkloadPolicies> {
+    const headers = this.generateHeaders(
+      'GET',
+      `/openapi/v1/applications/${applicationId}/policies`,
+    );
+    const URI = this.generateURI(
+      `openapi/v1/applications/${applicationId}/policies`,
+    );
+    const response: Response = await this.request(URI, { headers: headers });
+
+    if (!response.ok) {
+      this.handleApiError(response, URI);
+    }
+
+    return (await response.json()) as SecureWorkloadPolicies;
   }
 
   private handleApiError(err: any, endpoint: string): void {
@@ -392,6 +426,22 @@ export class APIClient {
 
     for (const scope of scopes) {
       await iteratee(scope);
+    }
+  }
+
+  public async iteratePolicies(
+    iteratee: ResourceIteratee<SecureWorkloadPolicy>,
+  ): Promise<void> {
+    const applications = await this.fetchApplications();
+
+    for (const application of applications || []) {
+      const policies = await this.fetchPolicies(application.id);
+      for (const policy of policies.absolute_policies || []) {
+        await iteratee(policy);
+      }
+      for (const policy of policies.default_policies || []) {
+        await iteratee(policy);
+      }
     }
   }
 }
