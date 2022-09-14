@@ -11,7 +11,8 @@ A Python client can also be found called
 1. Log in to Cisco Secure Workload and navigate to API Keys located under your
    profile in the top right.
 2. Click the **Create API Key** button and select **Users, roles and scope
-   management** and **Flow, workload and inventory APIs**.
+   management** **Flow, workload and inventory APIs** and **Applications and
+   policy management**.
 3. Supply the API Key and API Secret as the ENV variables (API_KEY and
    API_SECRET).
 4. Supply the URI for Cisco Secure Workload as the ENV variable (API_URI).
