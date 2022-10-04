@@ -1,15 +1,15 @@
 ---
-sourceId: managed:template
+sourceId: managed:cisco-secure-workload
 integrationDefinitionId: '${integration_definition_id}'
-questions: []
-  # - id: integration-question-template-replace-me
-  #   title: What kinds of questions will this integration support?
-  #   description:
-  #     TODO Every integration should contribute questions! Please be carefule
-  #     to replace this before deploying the integration to JupiterOne.
-  #   queries:
-  #     - name: good
-  #       query: |
-  #         find * with _integrationDefinitionId = '${integration_definition_id}'
-  #   tags:
-  #     - template
+questions: 
+- id: integration-question-cisco-secure-workload-cvss3-local-privileges-required
+  title: What are the Cisco Secure Workload CVSSv3 exploits that have local privileges required?
+  description:
+    Returns a list of Cisco Secure Workload CVSSv3 exploits that have local privileges required.
+  queries:
+     - name: CVSSv3 Exploits With Local Privileges
+       resultsAre: BAD
+       query: |
+         FIND csw_workload_finding WITH ([v3PrivilegesRequired] = "HIGH" AND [v3AttackComplexity] = "HIGH" AND [v3UserInteraction] = "REQUIRED" AND [v3AttackVector] = "LOCAL")
+  tags:
+  - cisco-secure-workload 
