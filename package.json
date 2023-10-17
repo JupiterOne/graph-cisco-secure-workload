@@ -2,6 +2,10 @@
   "name": "@jupiterone/graph-cisco-secure-workload",
   "version": "1.2.0",
   "description": "A JupiterOne Integration",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JupiterOne/graph-cisco-secure-workload"
+  },
   "license": "MPL-2.0",
   "main": "src/index.js",
   "types": "src/index.d.ts",
